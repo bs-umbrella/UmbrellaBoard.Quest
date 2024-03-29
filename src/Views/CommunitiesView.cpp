@@ -25,9 +25,11 @@ namespace Umbrella::Views {
             BSML::parse_and_construct(Assets::communities_list_bsml, transform, this);
 
             auto r = rectTransform;
-            r->sizeDelta = {24, 0};
+            r->sizeDelta = {24, 60};
             r->anchorMin = {0.5, 0};
             r->anchorMax = {0.5, 1};
+
+            _bsmlReady = true;
         }
     }
 
@@ -39,9 +41,6 @@ namespace Umbrella::Views {
     }
 
     void CommunitiesView::RefreshCommunities(std::string_view communitiesURL) {
-        _parsedContentParent->SetActive(false);
-        _loadingControl->ShowLoading(true, "Refreshing communities...");
-
         _responseFuture = _downloader.GetJson(communitiesURL);
     }
 
@@ -60,7 +59,7 @@ namespace Umbrella::Views {
     }
 
     float CommunitiesView::CellSize() {
-        return 15;
+        return 12;
     }
 
     int CommunitiesView::NumberOfCells() {
@@ -68,24 +67,30 @@ namespace Umbrella::Views {
     }
 
     void CommunitiesView::Update() {
-        if (_responseFuture.valid() && _responseFuture.wait_for(std::chrono::nanoseconds(0)) == std::future_status::ready) {
-            auto response = _responseFuture.get();
-            if (response && response.content.has_value()) {
-                _parsedContentParent->SetActive(true);
-                _loadingControl->ShowLoading(false);
+        if (!_bsmlReady) return;
 
-                HandleCommunitiesReceived(response.content.value());
-            } else {
-                DEBUG("Failed to get communities content");
-                if (response.httpCode < 200 && response.httpCode >= 300) {
-                    _loadingControl->ShowError(fmt::format("Failed to get content, http response: {}", response.httpCode));
-                } else if (response.curlStatus != 0) {
-                    _loadingControl->ShowError(fmt::format("Failed to get content, curl status: {}", response.curlStatus));
-                } else if (!response.content.has_value()) {
-                    _loadingControl->ShowError(fmt::format("Failed to get or parse content json"));
+        if (_responseFuture.valid()) {
+            if (_responseFuture.wait_for(std::chrono::nanoseconds(0)) == std::future_status::ready) {
+                auto response = _responseFuture.get();
+                if (response && response.content.has_value()) {
+                    _parsedContentParent->SetActive(true);
+                    _loadingControl->ShowLoading(false);
+
+                    HandleCommunitiesReceived(response.content.value());
                 } else {
-                    _loadingControl->ShowError();
+                    if (response.httpCode < 200 && response.httpCode >= 300) {
+                        _loadingControl->ShowError(fmt::format("Failed to get content, http response: {}", response.httpCode));
+                    } else if (response.curlStatus != 0) {
+                        _loadingControl->ShowError(fmt::format("Failed to get content, curl status: {}", response.curlStatus));
+                    } else if (!response.content.has_value()) {
+                        _loadingControl->ShowError(fmt::format("Failed to get or parse content json"));
+                    } else {
+                        _loadingControl->ShowError();
+                    }
                 }
+            } else {
+                _parsedContentParent->SetActive(false);
+                _loadingControl->ShowLoading(true, "Loading Communities...");
             }
         }
     }
@@ -119,7 +124,7 @@ namespace Umbrella::Views {
     CommunityCell* CommunityCell::GetCell() {
         auto gameObject = UnityEngine::GameObject::New_ctor("CommunityCell");
         auto cell = gameObject->AddComponent<CommunityCell*>();
-        BSML::parse_and_construct("<stack pref-width='15' pref-height='15' vertical-fit='PreferredSize' horizontal-fit='PreferredSize'><img id='_communityBackground'/><text id='_communityName' font-size='3' font-align='Center'/></stack>", cell->transform, cell);
+        BSML::parse_and_construct("<stack pref-width='20' pref-height='10' vertical-fit='PreferredSize' horizontal-fit='PreferredSize'><img id='_communityBackground'/><text id='_communityName' font-size='3' font-align='Center'/></stack>", cell->transform, cell);
         return cell;
     }
 
@@ -132,7 +137,7 @@ namespace Umbrella::Views {
     }
 
     void CommunityCell::UpdateHighlight() {
-        _communityBackground->set_color(highlighted ? UnityEngine::Color{0.6, 0.6, 0.6, 1} : UnityEngine::Color{1, 1, 1, 1});
+        _communityBackground->set_color(highlighted ? UnityEngine::Color{1, 1, 1, 1} : UnityEngine::Color{0.6, 0.6, 0.6, 1});
     }
 
     CommunityCell* CommunityCell::SetData(std::string_view communityName, std::string_view communityURL, UnityEngine::Sprite* background) {

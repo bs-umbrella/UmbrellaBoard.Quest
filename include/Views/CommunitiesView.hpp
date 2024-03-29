@@ -47,6 +47,7 @@ DECLARE_CLASS_CODEGEN_INTERFACES(Umbrella::Views, CommunitiesView, HMUI::ViewCon
         /// @brief handle when the communities have been received
         void HandleCommunitiesReceived(rapidjson::Document const& doc);
 
+        bool _bsmlReady;
         std::future<DownloaderUtility::Response<rapidjson::Document>> _responseFuture;
         DownloaderUtility _downloader;
 

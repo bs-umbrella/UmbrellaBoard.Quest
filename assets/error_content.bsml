@@ -1,5 +1,5 @@
 <bg id='_errorContent' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
-    <vertical pref-height='10' vertical-fit='PreferredSize'>
+    <vertical pref-height='10' vertical-fit='PreferredSize' pref-width='30'>
         <text id='_errorText' text='An error ocurred while downloading content...'/>
     </vertical>
 </bg>

@@ -21,6 +21,7 @@ DECLARE_CLASS_CODEGEN(Umbrella::Views, CommunityView, HMUI::ViewController,
     private:
         void ParseNewContent(std::string_view content);
 
+        bool _bsmlReady;
         DownloaderUtility _downloader;
         std::future<DownloaderUtility::Response<std::string>> _responseFuture;
 )

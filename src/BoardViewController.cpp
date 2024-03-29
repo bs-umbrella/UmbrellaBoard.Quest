@@ -69,7 +69,7 @@ namespace Umbrella {
     void BoardViewController::SwitchDisplayedView(HMUI::ViewController* targetView) {
         if (_activeViewController == targetView) return;
         if (_activeViewController != nullptr) {
-            _mainFlowCoordinator->PopViewControllerFromNavigationController(this, nullptr, false);
+            _mainFlowCoordinator->PopViewControllerFromNavigationController(this, nullptr, true);
             _activeViewController = nullptr;
         }
 

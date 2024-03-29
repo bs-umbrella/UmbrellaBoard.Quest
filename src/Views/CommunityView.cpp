@@ -23,26 +23,40 @@ namespace Umbrella::Views {
             _loadingControl = gameObject->AddComponent<LoadingControl*>();
             _loadingControl->ShowLoading(true);
             BSML::parse_and_construct("<bg id='_parsedContentParent'/>", transform, this);
+
+            auto r = rectTransform;
+            r->sizeDelta = {100, 0};
+            r->anchorMin = {0.5, 0};
+            r->anchorMax = {0.5, 1};
+            _bsmlReady = true;
         }
     }
 
     void CommunityView::Update() {
-        if (_responseFuture.valid() && _responseFuture.wait_for(std::chrono::nanoseconds(0)) == std::future_status::ready) {
-            auto response = _responseFuture.get();
-            if (response && response.content.has_value()) {
-                _loadingControl->ShowLoading(false);
-            } else {
-                _parsedContentParent->SetActive(false);
-
-                if (response.httpCode < 200 || response.httpCode >= 300) {
-                    _loadingControl->ShowError(fmt::format("Http response code: {}", response.httpCode));
-                } else if (response.curlStatus != 0) {
-                    _loadingControl->ShowError(fmt::format("Curl status code: {}", response.curlStatus));
-                } else if (!response.content.has_value()) {
-                    _loadingControl->ShowError(fmt::format("No content received"));
+        if (!_bsmlReady) return;
+        if (_responseFuture.valid()) {
+            if (_responseFuture.wait_for(std::chrono::nanoseconds(0)) == std::future_status::ready) {
+                auto response = _responseFuture.get();
+                if (response && response.content.has_value()) {
+                    _parsedContentParent->SetActive(true);
+                    _loadingControl->ShowLoading(false);
+                    ParseNewContent(response.content.value());
                 } else {
-                    _loadingControl->ShowError();
+                    _parsedContentParent->SetActive(false);
+
+                    if (response.httpCode < 200 || response.httpCode >= 300) {
+                        _loadingControl->ShowError(fmt::format("Http response code: {}", response.httpCode));
+                    } else if (response.curlStatus != 0) {
+                        _loadingControl->ShowError(fmt::format("Curl status code: {}", response.curlStatus));
+                    } else if (!response.content.has_value()) {
+                        _loadingControl->ShowError(fmt::format("No content received"));
+                    } else {
+                        _loadingControl->ShowError();
+                    }
                 }
+            } else {
+                _loadingControl->ShowLoading(true, "Downloading Community Page...");
+                _parsedContentParent->SetActive(false);
             }
         }
     }
@@ -60,7 +74,6 @@ namespace Umbrella::Views {
     }
 
     void CommunityView::LoadPage(std::string_view pageURL) {
-        _loadingControl->ShowLoading(true, "Downloading page...");
         _responseFuture = _downloader.GetString(pageURL);
     }
 }

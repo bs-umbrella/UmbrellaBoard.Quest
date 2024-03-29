@@ -1,5 +1,5 @@
 <bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
-    <vertical pref-height='70' vertical-fit='PreferredSize' pref-width='80' horizontal-fit='PreferredSize'>
+    <vertical pref-height='60' vertical-fit='PreferredSize' pref-width='80' horizontal-fit='PreferredSize' bg-alpha='0.8' bg='round-rect-panel' pad='2'>
         <text text='Umbrella Board' font-size='10'/>
         <text text='Welcome to the umbrella board, a new community driven news posting mod that lets communities handle their own news posts within the game! Select a Community page on the left to view their community page, and browse more pages on the right side afterwards. Stay informed!' word-wrapping='true'/>
     </vertical>
