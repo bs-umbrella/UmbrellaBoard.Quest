@@ -1,6 +1,7 @@
 <bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
-    <vertical>
-        <text text='Hello There!'/>
-        <text text='It looks like you got your hands on a version of umbrella that does not override the board url!'/>
+    <vertical pref-height='60'>
+        <text text='Hello There!' font-align='Center'/>
+        <text text='It looks like you got your hands on a version of umbrella that does not override the board url!' font-align='Center'/>
+        <text text='I hope you like it, you won&quot;t get any more news than this from it...' font-align='Center'/>
     </vertical>
 </bg>
