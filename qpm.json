@@ -8,8 +8,8 @@
     "version": "0.1.0",
     "url": "https://github.com/bs-umbrella/UmbrellaBoard",
     "additionalData": {
-      "cmake": false,
-      "overrideSoName": "libumbrella-board.so"
+      "overrideSoName": "libumbrella-board.so",
+      "cmake": false
     }
   },
   "workspace": {

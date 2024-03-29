@@ -9,12 +9,18 @@
       "version": "0.1.0",
       "url": "https://github.com/bs-umbrella/UmbrellaBoard",
       "additionalData": {
-        "cmake": false,
-        "overrideSoName": "libumbrella-board.so"
-    }
+        "overrideSoName": "libumbrella-board.so",
+        "cmake": false
+      }
     },
     "workspace": {
-      "scripts": {}
+      "scripts": {
+        "qmod": [
+          "pwsh ./scripts/build.ps1",
+          "qpm qmod build",
+          "pwsh ./scripts/createqmod.ps1 UmbrellaBoard"
+        ]
+      }
     },
     "dependencies": [
       {
@@ -60,6 +66,11 @@
       {
         "id": "libcurl",
         "versionRange": "^8.5.0",
+        "additionalData": {}
+      },
+      {
+        "id": "scotland2",
+        "versionRange": "^0.1.4",
         "additionalData": {}
       }
     ]
@@ -112,22 +123,20 @@
     },
     {
       "dependency": {
-        "id": "fmt",
-        "versionRange": "=10.0.0",
+        "id": "kaleb",
+        "versionRange": "=0.1.9",
         "additionalData": {
           "headersOnly": true,
-          "branchName": "version/v10_0_0",
+          "branchName": "version/v0_1_9",
           "compileOptions": {
-            "systemIncludes": [
-              "fmt/include/"
-            ],
             "cppFlags": [
-              "-DFMT_HEADER_ONLY"
+              "-DKALEB_VERSION=\"0.1.9\""
             ]
-          }
+          },
+          "cmake": false
         }
       },
-      "version": "10.0.0"
+      "version": "0.1.9"
     },
     {
       "dependency": {
@@ -159,23 +168,6 @@
         }
       },
       "version": "0.1.40"
-    },
-    {
-      "dependency": {
-        "id": "kaleb",
-        "versionRange": "=0.1.9",
-        "additionalData": {
-          "headersOnly": true,
-          "branchName": "version/v0_1_9",
-          "compileOptions": {
-            "cppFlags": [
-              "-DKALEB_VERSION=\"0.1.9\""
-            ]
-          },
-          "cmake": false
-        }
-      },
-      "version": "0.1.9"
     },
     {
       "dependency": {
@@ -230,6 +222,19 @@
     },
     {
       "dependency": {
+        "id": "beatsaber-hook",
+        "versionRange": "=5.1.6",
+        "additionalData": {
+          "soLink": "https://github.com/QuestPackageManager/beatsaber-hook/releases/download/v5.1.6/libbeatsaber-hook_5_1_6.so",
+          "debugSoLink": "https://github.com/QuestPackageManager/beatsaber-hook/releases/download/v5.1.6/debug_libbeatsaber-hook_5_1_6.so",
+          "branchName": "version/v5_1_6",
+          "cmake": true
+        }
+      },
+      "version": "5.1.6"
+    },
+    {
+      "dependency": {
         "id": "scotland2",
         "versionRange": "=0.1.4",
         "additionalData": {
@@ -258,16 +263,22 @@
     },
     {
       "dependency": {
-        "id": "beatsaber-hook",
-        "versionRange": "=5.1.6",
+        "id": "fmt",
+        "versionRange": "=10.0.0",
         "additionalData": {
-          "soLink": "https://github.com/QuestPackageManager/beatsaber-hook/releases/download/v5.1.6/libbeatsaber-hook_5_1_6.so",
-          "debugSoLink": "https://github.com/QuestPackageManager/beatsaber-hook/releases/download/v5.1.6/debug_libbeatsaber-hook_5_1_6.so",
-          "branchName": "version/v5_1_6",
-          "cmake": true
+          "headersOnly": true,
+          "branchName": "version/v10_0_0",
+          "compileOptions": {
+            "systemIncludes": [
+              "fmt/include/"
+            ],
+            "cppFlags": [
+              "-DFMT_HEADER_ONLY"
+            ]
+          }
         }
       },
-      "version": "5.1.6"
+      "version": "10.0.0"
     }
   ]
 }

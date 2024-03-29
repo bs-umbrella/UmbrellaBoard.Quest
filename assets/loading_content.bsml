@@ -1,5 +1,5 @@
 <bg id='_loadingContent' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
-    <vertical>
+    <vertical pref-height='60'>
         <text id='_loadingText' text='Umbrella Board Loading...' font-size='6'/>
         <stack pref-width='30' pref-height='30'>
             <loading-indicator preserve-aspect='true'/>

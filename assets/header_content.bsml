@@ -1,5 +1,8 @@
 <bg id='_headerContent' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
-    <horizontal anchor-pos-y='40' pref-width='120' bg='title-gradient' bg-color0='#ff69b4ff' bg-color1='#ff69b400'>
-        <text id='_headerText' text='Umbrella Board' font-size='8' font-align='Left'/>
+    <horizontal pref-height='15' anchor-pos-y='40' pref-width='120' bg='title-gradient' bg-color0='#ff69b4ff' bg-color1='#ff69b400' child-expand-height='false' child-align='MiddleCenter'>
+        <text id='_headerText' text='Umbrella Board' font-size='8' font-align='Center'/>
     </horizontal>
+    <stack ignore-layout='true' min-width='10' min-height='10' vertical-fit='MinSize' horizontal-fit='MinSize' anchor-pos-y='44' anchor-pos-x='50'>
+        <clickable-image src='#ReloadIcon' on-click='StartRefreshContent' preserve-aspect='true' hover-hint='Refresh Content'/>
+    </stack>
 </bg>
