@@ -81,14 +81,14 @@ add_custom_command(
 add_custom_command(
     TARGET umbrella-board POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E rename
-    ${CMAKE_CURRENT_BINARY_DIR}/libumbrella.so ${CMAKE_CURRENT_BINARY_DIR}/debug/libumbrella.so
+    ${CMAKE_CURRENT_BINARY_DIR}/libumbrella-board.so ${CMAKE_CURRENT_BINARY_DIR}/debug/libumbrella-board.so
     COMMENT "move normal binary into debug folder"
 )
 
 add_custom_command(
     TARGET umbrella-board POST_BUILD
     COMMAND ${CMAKE_STRIP} -g -S -d --strip-all
-    ${CMAKE_CURRENT_BINARY_DIR}/debug/libumbrella.so -o ${CMAKE_CURRENT_BINARY_DIR}/libumbrella.so
+    ${CMAKE_CURRENT_BINARY_DIR}/debug/libumbrella-board.so -o ${CMAKE_CURRENT_BINARY_DIR}/libumbrella-board.so
     COMMENT "Strip binary"
 )
 
