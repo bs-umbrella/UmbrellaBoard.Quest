@@ -59,7 +59,7 @@ namespace Umbrella {
             BSML::parse_and_construct(Assets::header_content_bsml, transform, this);
         }
 
-        // StartRefreshContent();
+        StartRefreshContent();
     }
 
     void BoardViewController::StartRefreshContent() {
