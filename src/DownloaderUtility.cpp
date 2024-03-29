@@ -6,6 +6,8 @@
 
 #include <sstream>
 #include <ranges>
+#include <filesystem>
+#include <fstream>
 
 namespace Umbrella {
     std::future<DownloaderUtility::Response<std::vector<uint8_t>>> DownloaderUtility::GetData(std::string_view url, QueryMap queries, HeaderMap headers, std::launch launchType) const {
@@ -89,6 +91,26 @@ namespace Umbrella {
 
     DownloaderUtility::Response<std::vector<uint8_t>> DownloaderUtility::GetData_internal(std::string url, QueryMap queries, HeaderMap headers) const {
         Response<std::vector<uint8_t>> response;
+
+        if (url.starts_with("file://")) {
+            std::filesystem::path filePath(url.substr(7));
+            response.curlStatus = 0;
+
+            if (std::filesystem::exists(filePath)) {
+                response.httpCode = 200;
+                std::vector<uint8_t> content;
+                std::ifstream file(filePath, std::ios::in | std::ios::binary | std::ios::ate);
+                content.resize(file.tellg());
+                file.seekg(0, std::ios::beg);
+                file.read((char*)content.data(), content.size());
+                response.content = std::move(content);
+            } else {
+                // file not found lol
+                response.httpCode = 404;
+            }
+
+            return response;
+        }
 
         auto curl = curl_easy_init();
         struct curl_slist *curl_headers = NULL;
