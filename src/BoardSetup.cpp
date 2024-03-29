@@ -1,4 +1,5 @@
 #include "BoardSetup.hpp"
+#include "logging.hpp"
 
 DEFINE_TYPE(Umbrella, BoardSetup);
 
@@ -10,6 +11,7 @@ namespace Umbrella {
 
     void BoardSetup::Initialize() {
         _mainFlowCoordinator->_providedRightScreenViewController = _boardView;
+        _mainFlowCoordinator->_rightScreenViewController = _boardView;
     }
 
     void BoardSetup::Dispose() {

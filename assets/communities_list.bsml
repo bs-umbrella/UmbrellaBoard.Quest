@@ -1,0 +1,5 @@
+<bg id='_parsedContentParent' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
+    <vertical pref-height='70' min-width='24' vertical-fit='PreferredSize' horizontal-fit='MinSize' bg='round-rect-panel' pad='2'>
+        <list id='_bsmlCommunityList' pref-height='60' pref-width='20' list-width='20' select-cell='HandleCommunitySelected'/>
+    </vertical>
+</bg>

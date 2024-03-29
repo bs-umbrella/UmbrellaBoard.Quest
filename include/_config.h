@@ -7,3 +7,6 @@
 #else
 #define UMBRELLA_EXPORT_FUNC UMBRELLA_EXPORT
 #endif
+
+#define TIMEOUT 10
+#define USER_AGENT "UmbrellaBoard/" VERSION " (+https://github.com/bs-umbrella/UmbrellaBoard)"
