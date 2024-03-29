@@ -81,6 +81,12 @@ namespace Umbrella {
 		return ret.str();
 	}
 
+    static auto write_vec_cb(uint8_t* content, std::size_t size, std::size_t nmemb, std::vector<uint8_t>* vec) -> std::size_t {
+        std::span<uint8_t> addedData(content, (size * nmemb));
+        vec->insert(std::next(vec->begin(), vec->size()), addedData.begin(), addedData.end());
+        return addedData.size();
+    };
+
     DownloaderUtility::Response<std::vector<uint8_t>> DownloaderUtility::GetData_internal(std::string url, QueryMap queries, HeaderMap headers) const {
         Response<std::vector<uint8_t>> response;
 
@@ -99,31 +105,25 @@ namespace Umbrella {
                 first = false;
             }
         }
+
         std::string encodedUrl = query_encode(fullUrl.str());
+
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, curl_headers);
         curl_easy_setopt(curl, CURLOPT_URL, encodedUrl.c_str());
         curl_easy_setopt(curl, CURLOPT_TIMEOUT, _timeOut);
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
         curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "GET");
 
-        auto cb = [](uint8_t* content, std::size_t size, std::size_t nmemb, std::vector<uint8_t>* vec) -> std::size_t {
-            std::span<uint8_t> addedData(content, content + (size * nmemb));
-            auto currentSize = vec->size();
-            vec->resize(currentSize + addedData.size());
-            std::copy(addedData.begin(), addedData.end(), std::next(vec->begin(), currentSize));
-            return addedData.size();
-        };
-
         std::vector<uint8_t> content;
 
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, cb);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_vec_cb);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &content);
 
         curl_easy_setopt(curl, CURLOPT_USERAGENT, _userAgent.c_str());
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
 
         response.curlStatus = curl_easy_perform(curl);
-        response.content = std::move(content);
+        if (response.curlStatus == CURLE_OK) response.content = std::move(content);
 
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response.httpCode);
         curl_easy_cleanup(curl);
