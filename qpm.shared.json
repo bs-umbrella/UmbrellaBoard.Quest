@@ -7,10 +7,11 @@
       "name": "UmbrellaBoard",
       "id": "umbrella-board",
       "version": "0.1.0",
-      "url": null,
+      "url": "https://github.com/bs-umbrella/UmbrellaBoard",
       "additionalData": {
-        "cmake": false
-      }
+        "cmake": false,
+        "overrideSoName": "libumbrella-board.so"
+    }
     },
     "workspace": {
       "scripts": {}
