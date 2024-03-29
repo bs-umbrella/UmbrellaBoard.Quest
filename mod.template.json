@@ -1,0 +1,16 @@
+{
+    "_QPVersion": "0.1.1",
+    "name": "UmbrellaBoard",
+    "id": "umbrella-board",
+    "author": "RedBrumbler",
+    "version": "${version}",
+    "packageId": "com.beatgames.beatsaber",
+    "packageVersion": "1.35.0_8016709773",
+    "description": "Adds parsed news to the right side of the main menu",
+    "dependencies": [],
+    "lateModFiles": [
+      "${binary}"
+    ],
+    "libraryFiles": [],
+    "fileCopies": []
+  }
