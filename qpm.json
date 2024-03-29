@@ -1,0 +1,70 @@
+{
+  "version": "0.3.0",
+  "sharedDir": "shared",
+  "dependenciesDir": "extern",
+  "info": {
+    "name": "UmbrellaBoard",
+    "id": "umbrella-board",
+    "version": "0.1.0",
+    "url": "https://github.com/bs-umbrella/UmbrellaBoard",
+    "additionalData": {
+      "cmake": false
+    }
+  },
+  "workspace": {
+    "scripts": {
+      "qmod": [
+        "pwsh ./scripts/build.ps1",
+        "qpm qmod build",
+        "pwsh ./scripts/createqmod.ps1 UmbrellaBoard"
+      ]
+    }
+  },
+  "dependencies": [
+    {
+      "id": "libil2cpp",
+      "versionRange": "^0.3.1",
+      "additionalData": {}
+    },
+    {
+      "id": "beatsaber-hook",
+      "versionRange": "^5.1.6",
+      "additionalData": {}
+    },
+    {
+      "id": "bs-cordl",
+      "versionRange": "^3500.0.0",
+      "additionalData": {}
+    },
+    {
+      "id": "lapiz",
+      "versionRange": "^0.2.6",
+      "additionalData": {}
+    },
+    {
+      "id": "bsml",
+      "versionRange": "^0.4.20",
+      "additionalData": {}
+    },
+    {
+      "id": "custom-types",
+      "versionRange": "^0.17.6",
+      "additionalData": {}
+    },
+    {
+      "id": "paper",
+      "versionRange": "^3.6.3",
+      "additionalData": {}
+    },
+    {
+      "id": "kaleb",
+      "versionRange": "^0.1.9",
+      "additionalData": {}
+    },
+    {
+      "id": "libcurl",
+      "versionRange": "^8.5.0",
+      "additionalData": {}
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+<bg id='_headerContent' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
+    <horizontal anchor-pos-y='40' pref-width='120' bg='title-gradient' bg-color0='#ff69b4ff' bg-color1='#ff69b400'>
+        <text id='_headerText' text='Umbrella Board' font-size='8' font-align='Left'/>
+    </horizontal>
+</bg>
