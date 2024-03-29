@@ -17,9 +17,9 @@ if (-not ($LastExitCode -eq 0)) {
 }
 
 if ($debug.IsPresent) {
-    & adb push build/debug/libumbrella.so /sdcard/ModData/com.beatgames.beatsaber/Modloader/mods/libumbrella.so
+    & adb push build/debug/libumbrella-board.so /sdcard/ModData/com.beatgames.beatsaber/Modloader/mods/libumbrella-board.so
 } else {
-    & adb push build/libumbrella.so /sdcard/ModData/com.beatgames.beatsaber/Modloader/mods/libumbrella.so
+    & adb push build/libumbrella-board.so /sdcard/ModData/com.beatgames.beatsaber/Modloader/mods/libumbrella-board.so
 }
 
 & adb shell am force-stop com.beatgames.beatsaber
