@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include "beatsaber-hook/shared/config/config-utils.hpp"
+#include "_config.h"
 
 struct Community {
     std::string communityName;
@@ -15,7 +16,7 @@ struct Community {
 
 struct Config {
     /// @brief URL to discover new communities from
-    std::string communitiesDiscoveryURL;
+    std::string communitiesDiscoveryURL = COMMUNITIES_URL;
 
     /// @brief communities that are enabled and available in the board view
     std::vector<Community> enabledCommunities;

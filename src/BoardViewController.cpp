@@ -3,6 +3,7 @@
 #include "bsml/shared/BSML.hpp"
 #include "assets.hpp"
 #include "logging.hpp"
+#include "config.hpp"
 
 #include "HMUI/Touchable.hpp"
 
@@ -10,10 +11,6 @@
 #include <future>
 
 DEFINE_TYPE(Umbrella, BoardViewController);
-
-#ifndef COMMUNITIES_URL
-#define COMMUNITIES_URL "file:///sdcard/ModData/com.beatgames.beatsaber/Mods/UmbrellaBoard/communities.json"
-#endif
 
 namespace Umbrella {
     void BoardViewController::ctor() {
@@ -57,7 +54,7 @@ namespace Umbrella {
     }
 
     void BoardViewController::StartRefreshContent() {
-        _communitiesView->RefreshCommunities(COMMUNITIES_URL);
+        _communitiesView->RefreshCommunities(config.communitiesDiscoveryURL);
         SwitchDisplayedView(_pageView);
     }
 
