@@ -5,6 +5,7 @@
 #include "config.hpp"
 #include "_config.h"
 
+#include "System/Collections/Generic/HashSet_1.hpp"
 #include "bsml/shared/BSML.hpp"
 #include "bsml/shared/Helpers/utilities.hpp"
 
@@ -138,6 +139,12 @@ namespace Umbrella::Views {
 
     void CommunitiesView::HandleCommunitySelected(HMUI::TableView* tableView, int32_t selectedCell) {
         CommunityWasSelected.invoke(config.enabledCommunities[selectedCell].communityPageURL);
+        // clear selection but not highlight
+        for (auto cell : ListW<UnityW<HMUI::TableCell>>(_tableView->_visibleCells)) {
+            cell->SetSelected(false, HMUI::SelectableCell::TransitionType::Instant, _tableView, false);
+        }
+        _tableView->_selectedCellIdxs->Clear();
+        _tableView->RefreshCells(true, false);
     }
 
     void CommunityCell::ctor() {
