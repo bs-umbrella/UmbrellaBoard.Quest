@@ -98,34 +98,38 @@ namespace Umbrella::Views {
 
     void CommunitiesView::HandleCommunitiesReceived(rapidjson::Document const& doc) {
         auto memberEnd = doc.MemberEnd();
+        auto questDiscoveryItr = doc.FindMember("questDiscovery");
+        if (questDiscoveryItr == memberEnd) {
+            WARNING("No additional quest communities were discovered through discovery URL");
+            return;
+        }
 
-        for (auto itr = doc.MemberBegin(); itr != memberEnd; itr++) {
-            std::string communityName = itr->value.GetString();
-            std::string communityBackgroundURL = itr->value["communityBackgroundURL"].GetString();
-            std::string communityPageURL = itr->value["communityPageURL"].GetString();
+
+        for (auto const& community : questDiscoveryItr->value.GetArray()) {
+            Community parsedCommunity;
+            if (!parsedCommunity.Deserialize(community)) {
+                WARNING("Failed to parse a community, skipping...");
+                continue;
+            }
 
             // is this a disabled community? if so, update and skip
-            auto disabledItr = std::find_if(config.disabledCommunities.begin(), config.disabledCommunities.end(), [&communityName](auto& c){ return c.communityName == communityName; });
+            auto disabledItr = std::find_if(config.disabledCommunities.begin(), config.disabledCommunities.end(), [&communityName = parsedCommunity.communityName](auto& c){ return c.communityName == communityName; });
             if (disabledItr != config.disabledCommunities.end()) {
-                disabledItr->communityBackgroundURL = communityBackgroundURL;
-                disabledItr->communityPageURL = communityPageURL;
+                disabledItr->communityBackgroundURL = parsedCommunity.communityBackgroundURL;
+                disabledItr->communityPageURL = parsedCommunity.communityPageURL;
                 continue;
             }
 
             // is this an already enabled community? if so, update and skip
-            auto enabledItr = std::find_if(config.enabledCommunities.begin(), config.enabledCommunities.end(), [&communityName](auto& c){ return c.communityName == communityName; });
+            auto enabledItr = std::find_if(config.enabledCommunities.begin(), config.enabledCommunities.end(), [&communityName = parsedCommunity.communityName](auto& c){ return c.communityName == communityName; });
             if (enabledItr != config.enabledCommunities.end()) {
-                enabledItr->communityBackgroundURL = communityBackgroundURL;
-                enabledItr->communityPageURL = communityPageURL;
+                enabledItr->communityBackgroundURL = parsedCommunity.communityBackgroundURL;
+                enabledItr->communityPageURL = parsedCommunity.communityPageURL;
                 continue;
             }
 
             // this is a new community, add to the back of the enabled communities!
-            config.enabledCommunities.emplace_back(
-                communityName,
-                communityBackgroundURL,
-                communityPageURL
-            );
+            config.enabledCommunities.emplace_back(std::move(parsedCommunity));
         }
 
         SaveConfig();
