@@ -9,13 +9,15 @@ namespace Umbrella::UI::TypeHandlers {
 
     PageOpenerHandler::Base::PropMap PageOpenerHandler::get_props() const {
         return {
-            { "page", { "page", "url" } }
+            { "page", { "page", "url" } },
+            { "openInBrowser", { "in-browser", "open-in-browser" } }
         };
     }
 
     PageOpenerHandler::Base::SetterMap PageOpenerHandler::get_setters() const {
         return {
             { "page", [](auto component, auto value){ component->page = value; }},
+            { "openInBrowser", [](auto component, auto value){ component->openInBrowser = value; }},
         };
     }
 

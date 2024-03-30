@@ -7,6 +7,7 @@ DECLARE_CLASS_CODEGEN(Umbrella::UI, PageOpener, UnityEngine::MonoBehaviour,
     DECLARE_INSTANCE_FIELD(StringW, page);
     DECLARE_INSTANCE_FIELD(System::Object*, host);
     DECLARE_INSTANCE_FIELD(UnityEngine::Component*, activationSource);
+    DECLARE_INSTANCE_FIELD(bool, openInBrowser);
 
     DECLARE_INSTANCE_METHOD(void, OpenPage);
 )
