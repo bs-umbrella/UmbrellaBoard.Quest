@@ -38,20 +38,12 @@ DECLARE_CLASS_CODEGEN_INTERFACES(Umbrella::Views, CommunitiesView, HMUI::ViewCon
 
         HMUI::TableView::IDataSource* i_IDataSource() noexcept { return reinterpret_cast<HMUI::TableView::IDataSource*>(this); }
     private:
-        struct CommunityInfo {
-            std::string communityName;
-            std::string communityURL;
-            std::string communityBackgroundURL;
-        };
-
         /// @brief handle when the communities have been received
         void HandleCommunitiesReceived(rapidjson::Document const& doc);
 
         bool _bsmlReady;
         std::future<DownloaderUtility::Response<rapidjson::Document>> _responseFuture;
         DownloaderUtility _downloader;
-
-        std::vector<CommunityInfo> _communitiesInfo;
 )
 
 DECLARE_CLASS_CODEGEN(Umbrella::Views, CommunityCell, HMUI::TableCell,

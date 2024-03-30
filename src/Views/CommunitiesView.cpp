@@ -2,6 +2,7 @@
 #include "LoadingControl.hpp"
 #include "logging.hpp"
 #include "assets.hpp"
+#include "config.hpp"
 #include "_config.h"
 
 #include "bsml/shared/BSML.hpp"
@@ -52,8 +53,8 @@ namespace Umbrella::Views {
             cell->set_reuseIdentifier("UmbrellaCommunities");
         }
 
-        auto& data = _communitiesInfo[idx];
-        cell->SetData(data.communityName, data.communityURL, data.communityBackgroundURL);
+        auto& data = config.enabledCommunities[idx];
+        cell->SetData(data.communityName, data.communityPageURL, data.communityBackgroundURL);
 
         return cell;
     }
@@ -63,7 +64,7 @@ namespace Umbrella::Views {
     }
 
     int CommunitiesView::NumberOfCells() {
-        return _communitiesInfo.size();
+        return config.enabledCommunities.size();
     }
 
     void CommunitiesView::Update() {
@@ -98,22 +99,41 @@ namespace Umbrella::Views {
     void CommunitiesView::HandleCommunitiesReceived(rapidjson::Document const& doc) {
         auto memberEnd = doc.MemberEnd();
 
-        _communitiesInfo.clear();
         for (auto itr = doc.MemberBegin(); itr != memberEnd; itr++) {
-            _communitiesInfo.emplace_back(
-                itr->name.GetString(),
-                itr->value["communityURL"].GetString(),
-                itr->value["communityBackgroundURL"].GetString()
+            std::string communityName = itr->value.Get<std::string>();
+            std::string communityBackgroundURL = itr->value["communityBackgroundURL"].Get<std::string>();
+            std::string communityPageURL = itr->value["communityPageURL"].Get<std::string>();
+
+            // is this a disabled community? if so, update and skip
+            auto disabledItr = std::find_if(config.disabledCommunities.begin(), config.disabledCommunities.end(), [&communityName](auto& c){ return c.communityName == communityName; });
+            if (disabledItr != config.disabledCommunities.end()) {
+                disabledItr->communityBackgroundURL = communityBackgroundURL;
+                disabledItr->communityPageURL = communityPageURL;
+                continue;
+            }
+
+            // is this an already enabled community? if so, update and skip
+            auto enabledItr = std::find_if(config.enabledCommunities.begin(), config.enabledCommunities.end(), [&communityName](auto& c){ return c.communityName == communityName; });
+            if (enabledItr != config.enabledCommunities.end()) {
+                enabledItr->communityBackgroundURL = communityBackgroundURL;
+                enabledItr->communityPageURL = communityPageURL;
+                continue;
+            }
+
+            // this is a new community, add to the back of the enabled communities!
+            config.enabledCommunities.emplace_back(
+                communityName,
+                communityBackgroundURL,
+                communityPageURL
             );
         }
 
-        INFO("Got {} entries", _communitiesInfo.size());
-
+        SaveConfig();
         _tableView->ReloadData();
     }
 
     void CommunitiesView::HandleCommunitySelected(HMUI::TableView* tableView, int32_t selectedCell) {
-        CommunityWasSelected.invoke(_communitiesInfo[selectedCell].communityURL);
+        CommunityWasSelected.invoke(config.enabledCommunities[selectedCell].communityPageURL);
     }
 
     void CommunityCell::ctor() {
