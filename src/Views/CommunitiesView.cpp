@@ -100,9 +100,9 @@ namespace Umbrella::Views {
         auto memberEnd = doc.MemberEnd();
 
         for (auto itr = doc.MemberBegin(); itr != memberEnd; itr++) {
-            std::string communityName = itr->value.Get<std::string>();
-            std::string communityBackgroundURL = itr->value["communityBackgroundURL"].Get<std::string>();
-            std::string communityPageURL = itr->value["communityPageURL"].Get<std::string>();
+            std::string communityName = itr->value.GetString();
+            std::string communityBackgroundURL = itr->value["communityBackgroundURL"].GetString();
+            std::string communityPageURL = itr->value["communityPageURL"].GetString();
 
             // is this a disabled community? if so, update and skip
             auto disabledItr = std::find_if(config.disabledCommunities.begin(), config.disabledCommunities.end(), [&communityName](auto& c){ return c.communityName == communityName; });

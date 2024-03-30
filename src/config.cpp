@@ -43,7 +43,7 @@ bool LoadConfig() {
 
     auto communitiesDiscoveryURLItr = doc.FindMember("communitiesDiscoveryURL");
     if (communitiesDiscoveryURLItr != doc.MemberEnd() && communitiesDiscoveryURLItr->value.IsString()) {
-        config.communitiesDiscoveryURL = communitiesDiscoveryURLItr->value.Get<std::string>();
+        config.communitiesDiscoveryURL = communitiesDiscoveryURLItr->value.GetString();
     } else {
         foundEverything = false;
     }
@@ -76,19 +76,19 @@ bool Community::Deserialize(rapidjson::Value const& val) {
     bool foundEverything = true;
     auto communityNameItr = val.FindMember("communityName");
     if (communityNameItr != val.MemberEnd() && communityNameItr->value.IsString()) {
-        communityName = communityNameItr->value.Get<std::string>();
+        communityName = communityNameItr->value.GetString();
     } else {
         foundEverything = false;
     }
     auto communityBackgroundURLItr = val.FindMember("communityBackgroundURL");
     if (communityBackgroundURLItr != val.MemberEnd() && communityBackgroundURLItr->value.IsString()) {
-        communityBackgroundURL = communityBackgroundURLItr->value.Get<std::string>();
+        communityBackgroundURL = communityBackgroundURLItr->value.GetString();
     } else {
         foundEverything = false;
     }
     auto communityPageURLItr = val.FindMember("communityPageURL");
     if (communityPageURLItr != val.MemberEnd() && communityPageURLItr->value.IsString()) {
-        communityPageURL = communityPageURLItr->value.Get<std::string>();
+        communityPageURL = communityPageURLItr->value.GetString();
     } else {
         foundEverything = false;
     }
