@@ -24,6 +24,10 @@ namespace Umbrella {
     void BoardViewController::ctor() {
         INVOKE_CTOR();
         HMUI::NavigationController::_ctor();
+
+        _presentAfterPopAction = BSML::MakeSystemAction<>(std::bind(&BoardViewController::PresentViewControllerAfterPop, this));
+        _finishPushAction = BSML::MakeSystemAction<>(std::bind(&BoardViewController::FinishPushingViewController, this));
+        this->_alignment = HMUI::NavigationController::Alignment::Beginning;
     }
 
     void BoardViewController::Inject(GlobalNamespace::MainFlowCoordinator* mainFlowCoordinator, Views::CommunitiesView* communitiesView, Views::CommunityView* communityView, Views::PageView* pageView, Views::PlaceHolderView* placeHolderView) {
@@ -63,18 +67,36 @@ namespace Umbrella {
     }
 
     void BoardViewController::StartRefreshContent() {
+        SwitchDisplayedView(_placeHolderView);
+
         _communitiesView->RefreshCommunities(COMMUNITIES_URL);
     }
 
     void BoardViewController::SwitchDisplayedView(HMUI::ViewController* targetView) {
-        if (_activeViewController == targetView) return;
+        // we're currently presenting something
+        if (_viewControllerToPresent) return;
+
+        _viewControllerToPresent = targetView;
+        // we had an active one, so remove it and wait for push to conclude
         if (_activeViewController != nullptr) {
-            _mainFlowCoordinator->PopViewControllerFromNavigationController(this, nullptr, true);
-            _activeViewController = nullptr;
+            _mainFlowCoordinator->PopViewControllerFromNavigationController(this, _presentAfterPopAction, false);
+            return;
         }
 
-        _mainFlowCoordinator->PushViewControllerToNavigationController(this, targetView, nullptr, false);
-        _activeViewController = targetView;
+        // we had no active one, so we can just push directly
+        _mainFlowCoordinator->PushViewControllerToNavigationController(this, targetView, _finishPushAction, false);
+    }
+
+    void BoardViewController::PresentViewControllerAfterPop() {
+        if (!_viewControllerToPresent) return;
+        _activeViewController = nullptr;
+        _mainFlowCoordinator->PushViewControllerToNavigationController(this, _viewControllerToPresent, _finishPushAction, false);
+    }
+
+    void BoardViewController::FinishPushingViewController() {
+        // set active and clear topresent
+        _activeViewController = _viewControllerToPresent;
+        _viewControllerToPresent = nullptr;
     }
 
     void BoardViewController::CommunityWasSelected(std::string_view communityURL) {

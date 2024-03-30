@@ -29,6 +29,10 @@ DECLARE_CLASS_CODEGEN_INTERFACES(Umbrella, BoardViewController, HMUI::Navigation
         DECLARE_INSTANCE_FIELD_PRIVATE(Views::PageView*, _pageView);
         DECLARE_INSTANCE_FIELD_PRIVATE(Views::PlaceHolderView*, _placeHolderView);
         DECLARE_INSTANCE_FIELD_PRIVATE(HMUI::ViewController*, _activeViewController);
+        DECLARE_INSTANCE_FIELD_PRIVATE(HMUI::ViewController*, _viewControllerToPresent);
+
+        DECLARE_INSTANCE_FIELD_PRIVATE(System::Action*, _presentAfterPopAction);
+        DECLARE_INSTANCE_FIELD_PRIVATE(System::Action*, _finishPushAction);
 
         DECLARE_INSTANCE_FIELD_PRIVATE(UnityEngine::GameObject*, _headerContent);
         DECLARE_INSTANCE_FIELD_PRIVATE(TMPro::TextMeshProUGUI*, _headerText);
@@ -41,6 +45,10 @@ DECLARE_CLASS_CODEGEN_INTERFACES(Umbrella, BoardViewController, HMUI::Navigation
     private:
         /// @brief pops a view if there was one active, and pushes this view onto the navigation controller
         void SwitchDisplayedView(HMUI::ViewController* targetView);
+
+        void PresentViewControllerAfterPop();
+
+        void FinishPushingViewController();
 
         /// @brief user selected a community in the left view
         void CommunityWasSelected(std::string_view communityURL);
