@@ -1,5 +1,6 @@
 #include "config.hpp"
 #include "logging.hpp"
+#include "beatsaber-hook/shared/config/config-utils.hpp"
 
 extern modloader::ModInfo modInfo;
 Config config;

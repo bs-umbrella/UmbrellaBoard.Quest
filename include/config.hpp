@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <string>
-#include "beatsaber-hook/shared/config/config-utils.hpp"
+#include "beatsaber-hook/shared/config/rapidjson-utils.hpp"
 #include "_config.h"
 
 struct Community {

@@ -18,6 +18,8 @@
 #include "Views/CommunitiesView.hpp"
 #include "Views/PageView.hpp"
 
+modloader::ModInfo modInfo{MOD_ID, VERSION, 0};
+
 UMBRELLA_EXPORT_FUNC void setup(CModInfo* info) {
     info->id = MOD_ID;
     info->version = VERSION;
