@@ -1,5 +1,4 @@
 #include "UI/Tags/OpenPageTags.hpp"
-#include "UI/IndexSelector.hpp"
 #include "UnityEngine/UI/LayoutElement.hpp"
 #include "UI/PageOpener.hpp"
 #include "bsml/shared/BSML.hpp"
