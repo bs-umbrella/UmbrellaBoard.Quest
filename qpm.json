@@ -6,7 +6,7 @@
     "name": "UmbrellaBoard",
     "id": "umbrella-board",
     "version": "0.1.0",
-    "url": "https://github.com/bs-umbrella/UmbrellaBoard",
+    "url": "https://github.com/bs-umbrella/UmbrellaBoard.Quest",
     "additionalData": {
       "overrideSoName": "libumbrella-board.so",
       "cmake": false

@@ -13,7 +13,7 @@ namespace Umbrella {
     }
 
     void LoadingControl::ShowLoading(bool isLoading, std::string_view loadingText) {
-        if (loadingText.empty()) loadingText = "Loading...";
+        if (isLoading && loadingText.empty()) loadingText = "Loading...";
 
         _loadingText->text = loadingText;
         _loadingContent->SetActive(isLoading);

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Views/PlaceHolderView.hpp"
 #include "custom-types/shared/macros.hpp"
 #include "lapiz/shared/macros.hpp"
 
@@ -14,20 +13,16 @@
 #include "GlobalNamespace/MainFlowCoordinator.hpp"
 
 #include "Views/CommunitiesView.hpp"
-#include "Views/CommunityView.hpp"
 #include "Views/PageView.hpp"
-#include "Views/PlaceHolderView.hpp"
 
 DECLARE_CLASS_CODEGEN_INTERFACES(Umbrella, BoardViewController, HMUI::NavigationController, std::vector<Il2CppClass*>({classof(Zenject::IInitializable*), classof(System::IDisposable*)}),
         DECLARE_CTOR(ctor);
 
-        DECLARE_INJECT_METHOD(void, Inject, GlobalNamespace::MainFlowCoordinator* mainFlowCoordinator, Views::CommunitiesView* communitiesView, Views::CommunityView* communityView, Views::PageView* pageView, Views::PlaceHolderView* placeHolderView);
+        DECLARE_INJECT_METHOD(void, Inject, GlobalNamespace::MainFlowCoordinator* mainFlowCoordinator, Views::CommunitiesView* communitiesView, Views::PageView* pageView);
 
         DECLARE_INSTANCE_FIELD_PRIVATE(GlobalNamespace::MainFlowCoordinator*, _mainFlowCoordinator);
         DECLARE_INSTANCE_FIELD_PRIVATE(Views::CommunitiesView*, _communitiesView);
-        DECLARE_INSTANCE_FIELD_PRIVATE(Views::CommunityView*, _communityView);
         DECLARE_INSTANCE_FIELD_PRIVATE(Views::PageView*, _pageView);
-        DECLARE_INSTANCE_FIELD_PRIVATE(Views::PlaceHolderView*, _placeHolderView);
         DECLARE_INSTANCE_FIELD_PRIVATE(HMUI::ViewController*, _activeViewController);
         DECLARE_INSTANCE_FIELD_PRIVATE(HMUI::ViewController*, _viewControllerToPresent);
 
@@ -52,6 +47,4 @@ DECLARE_CLASS_CODEGEN_INTERFACES(Umbrella, BoardViewController, HMUI::Navigation
 
         /// @brief user selected a community in the left view
         void CommunityWasSelected(std::string_view communityURL);
-        /// @brief user selected a page to be opened through community view or through a page view
-        void PageWasOpened(std::string_view pageURL);
 )

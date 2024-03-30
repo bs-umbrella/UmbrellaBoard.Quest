@@ -137,7 +137,7 @@ namespace Umbrella::Views {
     }
 
     void CommunityCell::UpdateHighlight() {
-        _communityBackground->set_color(highlighted ? UnityEngine::Color{1, 1, 1, 1} : UnityEngine::Color{0.6, 0.6, 0.6, 1});
+        _communityBackground->set_color(highlighted || selected ? UnityEngine::Color{1, 1, 1, 1} : UnityEngine::Color{0.6, 0.6, 0.6, 1});
     }
 
     CommunityCell* CommunityCell::SetData(std::string_view communityName, std::string_view communityURL, UnityEngine::Sprite* background) {

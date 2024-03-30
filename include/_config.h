@@ -9,4 +9,4 @@
 #endif
 
 #define TIMEOUT 10
-#define USER_AGENT "UmbrellaBoard/" VERSION " (+https://github.com/bs-umbrella/UmbrellaBoard)"
+#define USER_AGENT "UmbrellaBoard/" VERSION " (+https://github.com/bs-umbrella/UmbrellaBoard.Quest)"
