@@ -31,10 +31,11 @@ add_assets(
 target_compile_options(umbrella-board PRIVATE -Wno-invalid-offsetof)
 target_compile_options(umbrella-board PRIVATE -DNEED_UNSAFE_CSHARP)
 target_compile_options(umbrella-board PRIVATE -fdeclspec)
+target_compile_options(umbrella-board PRIVATE -fvisibility=hidden)
 target_compile_options(umbrella-board PRIVATE -DUNITY_2021)
 target_compile_options(umbrella-board PRIVATE -DHAS_CODEGEN)
 target_compile_options(umbrella-board PRIVATE -DFMT_HEADER_ONLY)
-target_compile_options(umbrella-board PRIVATE -DMOD_ID="BeatSaberIRC")
+target_compile_options(umbrella-board PRIVATE -DMOD_ID="UmbrellaBoard")
 target_compile_options(umbrella-board PRIVATE -DVERSION="${PACKAGE_VERSION}")
 
 string(JSON DEPENDENCIES_LENGTH LENGTH ${PACKAGE_JSON} restoredDependencies)
