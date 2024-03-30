@@ -17,12 +17,6 @@
 #include "Views/CommunitiesView.hpp"
 #include "Views/PageView.hpp"
 
-MAKE_HOOK(abort_hook, nullptr, void) {
-    auto logger = Paper::ConstLoggerContext("Install_Abort");
-    logger.Backtrace(40);
-    abort_hook();
-}
-
 UMBRELLA_EXPORT_FUNC void setup(CModInfo* info) {
     info->id = MOD_ID;
     info->version = VERSION;
@@ -34,11 +28,6 @@ UMBRELLA_EXPORT_FUNC void late_load() {
     il2cpp_functions::Init();
     custom_types::Register::AutoRegister();
     Umbrella::Hooking::InstallHooks();
-
-    auto libc = dlopen("libc.so", RTLD_NOW);
-    auto abrt = dlsym(libc, "abort");
-    auto logger = Paper::ConstLoggerContext("Install_Abort");
-    INSTALL_HOOK_DIRECT(logger, abort_hook, (void*)abrt);
 
     auto z = Lapiz::Zenject::Zenjector::Get();
     z->Install(Lapiz::Zenject::Location::Menu, [](Zenject::DiContainer* container){
