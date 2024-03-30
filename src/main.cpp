@@ -1,6 +1,7 @@
 #include "Views/CommunitiesView.hpp"
 #include "logging.hpp"
 #include "hooking.hpp"
+#include "config.hpp"
 #include "_config.h"
 
 #include "bsml/shared/BSML.hpp"
@@ -28,6 +29,7 @@ UMBRELLA_EXPORT_FUNC void late_load() {
     il2cpp_functions::Init();
     custom_types::Register::AutoRegister();
     Umbrella::Hooking::InstallHooks();
+    if (!LoadConfig()) SaveConfig();
 
     auto z = Lapiz::Zenject::Zenjector::Get();
     z->Install(Lapiz::Zenject::Location::Menu, [](Zenject::DiContainer* container){
