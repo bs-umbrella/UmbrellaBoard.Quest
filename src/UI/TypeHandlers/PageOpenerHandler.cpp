@@ -30,7 +30,7 @@ namespace Umbrella::UI::TypeHandlers {
             if (auto clickableText = il2cpp_utils::try_cast<BSML::ClickableText>(src).value_or(nullptr); clickableText != nullptr) {
                 clickableText->onClick += {&PageOpener::OpenPage, pageOpener};
             } else if (auto clickableImage = il2cpp_utils::try_cast<BSML::ClickableImage>(src).value_or(nullptr); clickableImage != nullptr) {
-                clickableText->onClick += {&PageOpener::OpenPage, pageOpener};
+                clickableImage->onClick += {&PageOpener::OpenPage, pageOpener};
             } else if (auto button = il2cpp_utils::try_cast<UnityEngine::UI::Button>(src).value_or(nullptr); button != nullptr) {
                 button->onClick->AddListener(BSML::MakeUnityAction(std::bind(&PageOpener::OpenPage, pageOpener)));
             } else {
