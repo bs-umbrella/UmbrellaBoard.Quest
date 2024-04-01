@@ -24,7 +24,6 @@ namespace Umbrella::UI::TypeHandlers {
     }
     CarouselHandler::Base::SetterMap CarouselHandler::get_setters() const {
         return {
-            { "startChildIndex",    [](auto component, auto value){ component->SetCurrentlyActiveChildIndex(value, false); }},
             { "direction",          [](auto component, auto value){ component->set_Direction(ParseDirection(value)); }},
             { "location",           [](auto component, auto value){ component->set_Location(ParseLocation(value)); }},
             { "timerBehaviour",     [](auto component, auto value){ component->set_TimerBehaviour(ParseTimerBehaviour(value)); }},
@@ -46,6 +45,12 @@ namespace Umbrella::UI::TypeHandlers {
         CarouselHandler::Base::HandleTypeAfterChildren(componentType, parserParams);
         auto component = reinterpret_cast<Carousel*>(componentType.component);
         component->SetupAfterChildren();
+
+        auto& data = componentType.data;
+        auto startChildIndexItr = data.find("startChildIndex");
+        if (startChildIndexItr != data.end()) {
+            component->SetCurrentlyActiveChildIndex(StringParseHelper(startChildIndexItr->second), false);
+        }
     }
 
     Carousel::CarouselDirection ParseDirection(std::string const& str) {
