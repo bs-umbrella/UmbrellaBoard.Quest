@@ -9,8 +9,13 @@ DEFINE_TYPE(Umbrella::UI, Carousel);
 DEFINE_TYPE(Umbrella::UI, CarouselBubble);
 DEFINE_TYPE(Umbrella::UI, HoverDetection);
 
-inline float lerp(float a, float b, float t) { return a + (b - a) * t; }
-inline UnityEngine::Vector2 lerp(UnityEngine::Vector2 a, UnityEngine::Vector2 b, float t) { return { lerp (a.x, b.x, t), lerp(a.y, b.y, t) }; }
+constexpr inline float flip(float t) { return 1.0f - t; }
+constexpr inline float square(float t) { return t * t; }
+constexpr inline float ease_in(float t) { return square(t); }
+constexpr inline float ease_out(float t) { return flip(square(flip(t))); }
+constexpr inline float lerp(float a, float b, float t) { return a + (b - a) * t; }
+constexpr inline float eased_t(float t) { return lerp(ease_in(t), ease_out(t), t); }
+constexpr inline UnityEngine::Vector2 lerp(UnityEngine::Vector2 a, UnityEngine::Vector2 b, float t) { return { lerp (a.x, b.x, t), lerp(a.y, b.y, t) }; }
 
 namespace Umbrella::UI {
     void Carousel::ctor() {
@@ -187,6 +192,10 @@ namespace Umbrella::UI {
         _tickerLayoutElement->preferredHeight = -1;
         _tickerLayoutElement->preferredWidth = 8;
 
+        // update fit modes
+        _tickerSizeFitter->verticalFit = UnityEngine::UI::ContentSizeFitter::FitMode::Unconstrained;
+        _tickerSizeFitter->horizontalFit = UnityEngine::UI::ContentSizeFitter::FitMode::PreferredSize;
+
         // rotate buttons
         SetButtonDirection(_prevButton, PageButtonDirection::Up);
         SetButtonDirection(_nextButton, PageButtonDirection::Down);
@@ -202,85 +211,94 @@ namespace Umbrella::UI {
         _tickerLayoutElement->preferredHeight = 8;
         _tickerLayoutElement->preferredWidth = -1;
 
+        // update fit modes
+        _tickerSizeFitter->horizontalFit = UnityEngine::UI::ContentSizeFitter::FitMode::Unconstrained;
+        _tickerSizeFitter->verticalFit = UnityEngine::UI::ContentSizeFitter::FitMode::PreferredSize;
+
         // rotate buttons
         SetButtonDirection(_prevButton, PageButtonDirection::Left);
         SetButtonDirection(_nextButton, PageButtonDirection::Right);
     }
 
-    void Carousel::MoveTicker(CarouselLocation location, CarouselDirection direction) {
+    void Carousel::SetContentVertical() {
+        // set content vertical
+        _contentLayoutGroup->SetLayoutVertical();
+        // the content direction should be preferred, the other unconstrained
+        _contentSizeFitter->verticalFit = UnityEngine::UI::ContentSizeFitter::FitMode::PreferredSize;
+        _contentSizeFitter->horizontalFit = UnityEngine::UI::ContentSizeFitter::FitMode::Unconstrained;
+
+        // update anchor stuff for vertical
+        _content->anchorMin = {0, 1};
+        _content->anchorMax = {1, 1};
+        _content->pivot = {0.5, 1};
+    }
+
+    void Carousel::SetContentHorizontal() {
+        // set content horizontal
+        _contentLayoutGroup->SetLayoutHorizontal();
+        // the content direction should be preferred, the other unconstrained
+        _contentSizeFitter->horizontalFit = UnityEngine::UI::ContentSizeFitter::FitMode::PreferredSize;
+        _contentSizeFitter->verticalFit = UnityEngine::UI::ContentSizeFitter::FitMode::Unconstrained;
+
+        // update anchor stuff for horizontal
+        _content->anchorMin = {0, 0};
+        _content->anchorMax = {0, 1};
+        _content->pivot = {0, 0.5};
+    }
+
+    void Carousel::MoveTicker(CarouselLocation location, CarouselDirection direction, bool force) {
         // no movement needed, was already in that place
-        if (location == _carouselLocation && direction == _carouselDirection) return;
+        if (!force && location == _carouselLocation && direction == _carouselDirection) return;
         // carousel layout is the ticker & viewport
         // ticker layout is the ticker itself
-        switch (location) {
-            using enum CarouselLocation;
-            case Bottom: {
-                SetTickerHorizontal();
-                _ticker->SetAsLastSibling();
-            } break;
-            case Top: {
-                SetTickerHorizontal();
-                _ticker->SetAsFirstSibling();
-            } break;
-            case Left: {
-                SetTickerVertical();
-                _ticker->SetAsFirstSibling();
-            } break;
-            case Right: {
-                SetTickerVertical();
-                _ticker->SetAsFirstSibling();
-            } break;
-            case Default: {
-                switch (direction) {
-                    using enum CarouselDirection;
-                    // default for horizontal is the same as bottom
-                    case Horizontal: {
-                        SetTickerHorizontal();
-                        _ticker->SetAsLastSibling();
-                    } break;
-                    // default for vertical is the same as left
-                    case Vertical: {
-                        SetTickerVertical();
-                        _ticker->SetAsFirstSibling();
-                    } break;
-                }
-            } break;
+
+        if (force || location != _carouselLocation) {
+            switch (location) {
+                using enum CarouselLocation;
+                case Bottom: {
+                    SetTickerHorizontal();
+                    _ticker->SetAsLastSibling();
+                } break;
+                case Top: {
+                    SetTickerHorizontal();
+                    _ticker->SetAsFirstSibling();
+                } break;
+                case Left: {
+                    SetTickerVertical();
+                    _ticker->SetAsFirstSibling();
+                } break;
+                case Right: {
+                    SetTickerVertical();
+                    _ticker->SetAsFirstSibling();
+                } break;
+                case Default: {
+                    switch (direction) {
+                        using enum CarouselDirection;
+                        // default for horizontal is the same as bottom
+                        case Horizontal: {
+                            SetTickerHorizontal();
+                            _ticker->SetAsLastSibling();
+                        } break;
+                        // default for vertical is the same as left
+                        case Vertical: {
+                            SetTickerVertical();
+                            _ticker->SetAsFirstSibling();
+                        } break;
+                    }
+                } break;
+            }
         }
 
-        switch (direction) {
-            using enum CarouselDirection;
-            case Horizontal: {
-                // set content horizontal
-                _contentLayoutGroup->SetLayoutHorizontal();
-                // the content direction should be preferred, the other unconstrained
-                _contentSizeFitter->horizontalFit = UnityEngine::UI::ContentSizeFitter::FitMode::PreferredSize;
-                _contentSizeFitter->verticalFit = UnityEngine::UI::ContentSizeFitter::FitMode::Unconstrained;
-
-                // update anchor stuff for horizontal
-                _content->anchorMin = {0, 0};
-                _content->anchorMax = {0, 1};
-                _content->pivot = {0, 0.5};
-
-                // update control
-                _contentLayoutGroup->childControlWidth = false;
-                _contentLayoutGroup->childControlHeight = true;
-            } break;
-            case Vertical: {
-                // set content horizontal
-                _contentLayoutGroup->SetLayoutVertical();
-                // the content direction should be preferred, the other unconstrained
-                _contentSizeFitter->verticalFit = UnityEngine::UI::ContentSizeFitter::FitMode::PreferredSize;
-                _contentSizeFitter->horizontalFit = UnityEngine::UI::ContentSizeFitter::FitMode::Unconstrained;
-
-                // update anchor stuff for vertical
-                _content->anchorMin = {0, 1};
-                _content->anchorMax = {1, 1};
-                _content->pivot = {0.5, 1};
-
-                // update control
-                _contentLayoutGroup->childControlHeight = false;
-                _contentLayoutGroup->childControlWidth = true;
-            } break;
+        if (force || direction != _carouselDirection) {
+            switch (direction) {
+                using enum CarouselDirection;
+                case Horizontal: {
+                    SetContentHorizontal();
+                } break;
+                case Vertical: {
+                    SetContentVertical();
+                } break;
+            }
         }
 
         // update variables
@@ -308,10 +326,10 @@ namespace Umbrella::UI {
         switch (_carouselDirection) {
             using enum CarouselDirection;
             case Horizontal: {
-                _content->sizeDelta = {size, _carouselLayoutElement->preferredHeight};
+                _content->sizeDelta = {size, 0};
             } break;
             case Vertical: {
-                _content->sizeDelta = {_carouselLayoutElement->preferredWidth, size};
+                _content->sizeDelta = {0, size};
             } break;
         }
     }
@@ -324,7 +342,6 @@ namespace Umbrella::UI {
 
     void Carousel::SetupAfterChildren() {
         int childCount = _content->childCount;
-        INFO("Had {} children", childCount);
 
         auto parent = _bubblePrefab->transform->parent;
         _bubblePrefab->AddComponent<CarouselBubble*>();
@@ -374,17 +391,17 @@ namespace Umbrella::UI {
             using enum CarouselDirection;
             case Horizontal: {
                 auto delta = targetChildPos.x - currentChildPos.x;
-                targetContentPos.x += delta;
+                targetContentPos.x -= delta;
             } break;
             case Vertical: {
                 auto delta = targetChildPos.y - currentChildPos.y;
-                targetContentPos.y += delta;
+                targetContentPos.y -= delta;
             } break;
         }
 
         if (animated) {
             for (auto t = 0.0f; t < 1.0f; t += UnityEngine::Time::get_deltaTime() * 5.0f) {
-                _content->anchoredPosition = lerp(currentContentPos, targetContentPos, t);
+                _content->anchoredPosition = lerp(currentContentPos, targetContentPos, eased_t(t));
                 co_yield nullptr;
             }
         }

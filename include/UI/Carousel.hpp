@@ -16,6 +16,10 @@
 #include "UnityEngine/GameObject.hpp"
 #include "UnityEngine/RectTransform.hpp"
 
+namespace Umbrella::UI::Tags {
+    class CarouselTag;
+}
+
 DECLARE_CLASS_CODEGEN(Umbrella::UI, CarouselBubble, UnityEngine::MonoBehaviour,
         DECLARE_CTOR(ctor);
         DECLARE_INSTANCE_FIELD(HMUI::ImageView*, image);
@@ -143,6 +147,7 @@ DECLARE_CLASS_CODEGEN(Umbrella::UI, Carousel, UnityEngine::MonoBehaviour,
         void Setup();
         void SetupAfterChildren();
     private:
+        friend class ::Umbrella::UI::Tags::CarouselTag;
         int _currentChildIndex;
         int _movingDirection;
         bool _isAnimating;
@@ -164,9 +169,11 @@ DECLARE_CLASS_CODEGEN(Umbrella::UI, Carousel, UnityEngine::MonoBehaviour,
         void UpdateButtonsInteractable();
 
         /// @brief rearranges the ticker to be at location and direction
-        void MoveTicker(CarouselLocation location, CarouselDirection direction);
+        void MoveTicker(CarouselLocation location, CarouselDirection direction, bool force = false);
         void SetTickerVertical();
         void SetTickerHorizontal();
+        void SetContentVertical();
+        void SetContentHorizontal();
 
         void OnPointerEnterViewport();
         void OnPointerExitViewport();

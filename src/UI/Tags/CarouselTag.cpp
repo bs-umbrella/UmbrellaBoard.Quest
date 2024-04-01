@@ -47,9 +47,11 @@ namespace Umbrella::UI::Tags {
         auto fitter = content->AddComponent<UnityEngine::UI::ContentSizeFitter*>();
         fitter->horizontalFit = UnityEngine::UI::ContentSizeFitter::FitMode::PreferredSize;
         fitter->verticalFit = UnityEngine::UI::ContentSizeFitter::FitMode::Unconstrained;
+        carousel->_contentSizeFitter = fitter;
 
         auto layout = content->AddComponent<UnityEngine::UI::HorizontalLayoutGroup*>();
-        layout->childControlWidth = false;
+        layout->childControlWidth = true;
+        layout->childControlHeight = true;
         layout->childForceExpandWidth = false;
         layout->childForceExpandHeight = false;
         carousel->_contentLayoutGroup = layout;
@@ -59,8 +61,6 @@ namespace Umbrella::UI::Tags {
         contentRect->anchorMin = {0, 0};
         contentRect->anchorMax = {0, 1};
         contentRect->anchoredPosition = {0, 0};
-        contentRect->sizeDelta = {0, 0};
-        contentRect->pivot = {0, 0.5};
 
         carousel->_viewPort = vpRect;
         carousel->_content = contentRect;
@@ -83,7 +83,8 @@ namespace Umbrella::UI::Tags {
 
         carousel->_bubblePrefab->SetActive(false);
 
-        carousel->Direction = Carousel::CarouselDirection::Horizontal;
+        carousel->_ticker->SetParent(carousel->transform, false);
+        carousel->MoveTicker(Carousel::CarouselLocation::Default, Carousel::CarouselDirection::Horizontal, true);
 
         go->SetActive(true);
         // we return content for things to be parented to

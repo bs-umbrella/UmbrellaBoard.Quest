@@ -1,4 +1,4 @@
-<horizontal id='_ticker' bg='round-rect-panel' bg-alpha='0.8' horizontal-fit='PreferredSize' vertical-fit='PreferredSize'>
+<horizontal id='_ticker' bg='round-rect-panel' bg-alpha='0.8' vertical-fit='PreferredSize'>
     <page-button id='_prevButton' direction='Left' on-click='PreviousItem'/>
     <stack id='_bubblePrefab' pref-width='4' pref-height='4'>
         <img src='#NoteCircle' preserve-aspect='true'/>
