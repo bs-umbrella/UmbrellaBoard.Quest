@@ -7,6 +7,7 @@ namespace Umbrella::UI::TypeHandlers {
     static Carousel::CarouselDirection ParseDirection(std::string const& str);
     static Carousel::CarouselLocation ParseLocation(std::string const& str);
     static Carousel::CarouselTimerBehaviour ParseTimerBehaviour(std::string const& str);
+    static Carousel::CarouselAlignment ParseAlignment(std::string const& str);
 
     CarouselHandler::Base::PropMap CarouselHandler::get_props() const {
         return {
@@ -15,8 +16,10 @@ namespace Umbrella::UI::TypeHandlers {
             { "location", { "location", "ticker-location" } },
             { "timerBehaviour", { "timer-behaviour" } },
             { "timerLength", { "timer-length" } },
+            { "contentAlignment", { "content-alignment"} },
             { "showButtons", { "show-buttons" } },
-            { "pauseOnHover", { "pause-on-hover" } }
+            { "pauseOnHover", { "pause-on-hover" } },
+            { "inactiveAlpha", { "inactive-alpha" } },
         };
     }
     CarouselHandler::Base::SetterMap CarouselHandler::get_setters() const {
@@ -26,8 +29,10 @@ namespace Umbrella::UI::TypeHandlers {
             { "location",           [](auto component, auto value){ component->set_Location(ParseLocation(value)); }},
             { "timerBehaviour",     [](auto component, auto value){ component->set_TimerBehaviour(ParseTimerBehaviour(value)); }},
             { "timerLength",        [](auto component, auto value){ component->set_TimerLength(value); }},
+            { "contentAlignment",   [](auto component, auto value){ component->set_Alignment(ParseAlignment(value)); }},
             { "showButtons",        [](auto component, auto value){ component->set_ShowButtons(value); }},
-            { "pauseOnHover",       [](auto component, auto value){ component->set_PauseOnHover(value); }}
+            { "pauseOnHover",       [](auto component, auto value){ component->set_PauseOnHover(value); }},
+            { "inactiveAlpha",      [](auto component, auto value){ component->set_InactiveAlpha(value); }}
         };
     }
 
@@ -68,5 +73,14 @@ namespace Umbrella::UI::TypeHandlers {
         if (str == "LoopBackward") return Carousel::CarouselTimerBehaviour::LoopBackward;
 
         return Carousel::CarouselTimerBehaviour::None;
+    }
+
+    Carousel::CarouselAlignment ParseAlignment(std::string const& str) {
+        if (str == "Beginning") return Carousel::CarouselAlignment::Beginning;
+        if (str == "Middle") return Carousel::CarouselAlignment::Middle;
+        if (str == "Center") return Carousel::CarouselAlignment::Center;
+        if (str == "End") return Carousel::CarouselAlignment::End;
+
+        return Carousel::CarouselAlignment::Center;
     }
 }

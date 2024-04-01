@@ -3,6 +3,7 @@
 #include "custom-types/shared/macros.hpp"
 #include "custom-types/shared/coroutine.hpp"
 #include "UnityEngine/MonoBehaviour.hpp"
+#include "UnityEngine/CanvasGroup.hpp"
 #include "UnityEngine/UI/Button.hpp"
 #include "UnityEngine/UI/HorizontalOrVerticalLayoutGroup.hpp"
 #include "UnityEngine/UI/ContentSizeFitter.hpp"
@@ -23,6 +24,7 @@ namespace Umbrella::UI::Tags {
 DECLARE_CLASS_CODEGEN(Umbrella::UI, CarouselBubble, UnityEngine::MonoBehaviour,
         DECLARE_CTOR(ctor);
         DECLARE_INSTANCE_FIELD(HMUI::ImageView*, image);
+
     public:
         HMUI::ImageView* get_Image();
         __declspec(property(get=get_Image)) HMUI::ImageView* Image;
@@ -38,8 +40,9 @@ DECLARE_CLASS_CODEGEN(Umbrella::UI, CarouselBubble, UnityEngine::MonoBehaviour,
         UnityEngine::Color get_DefaultColor() const { return _highlightColor; }
         void set_DefaultColor(UnityEngine::Color highlightColor) { _highlightColor = highlightColor; UpdateHighlight(); }
         __declspec(property(get=get_DefaultColor, put=set_DefaultColor)) UnityEngine::Color DefaultColor;
-    private:
+
         void UpdateHighlight();
+    private:
         bool _highlighted;
         UnityEngine::Color _highlightColor;
         UnityEngine::Color _defaultColor;
@@ -69,6 +72,7 @@ DECLARE_CLASS_CODEGEN(Umbrella::UI, Carousel, UnityEngine::MonoBehaviour,
         DECLARE_INSTANCE_FIELD(UnityEngine::Transform*, _ticker);
         DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, _bubblePrefab);
         DECLARE_INSTANCE_FIELD(ListW<CarouselBubble*>, _carouselBubbles);
+        DECLARE_INSTANCE_FIELD(ListW<UnityEngine::CanvasGroup*>, _carouselCanvasGroups);
         DECLARE_INSTANCE_FIELD(UnityEngine::RectTransform*, _content);
         DECLARE_INSTANCE_FIELD(UnityEngine::RectTransform*, _viewPort);
 
@@ -81,8 +85,9 @@ DECLARE_CLASS_CODEGEN(Umbrella::UI, Carousel, UnityEngine::MonoBehaviour,
 
         DECLARE_INSTANCE_METHOD(void, Update);
         DECLARE_INSTANCE_METHOD(void, OnDestroy);
+        DECLARE_INSTANCE_METHOD(void, OnEnable);
     public:
-        enum CarouselTimerBehaviour {
+        enum class CarouselTimerBehaviour {
             None,
             PingPong,
             Loop,
@@ -90,17 +95,24 @@ DECLARE_CLASS_CODEGEN(Umbrella::UI, Carousel, UnityEngine::MonoBehaviour,
             LoopBackward
         };
 
-        enum CarouselDirection {
+        enum class CarouselDirection {
             Horizontal,
             Vertical
         };
 
-        enum CarouselLocation {
+        enum class CarouselLocation {
             Default,
             Bottom,
             Top,
             Left,
             Right
+        };
+
+        enum class CarouselAlignment {
+            Beginning,
+            Center,
+            Middle = Center,
+            End
         };
 
         /// @brief active child changed, args are self, new index
@@ -122,6 +134,10 @@ DECLARE_CLASS_CODEGEN(Umbrella::UI, Carousel, UnityEngine::MonoBehaviour,
         void set_TimerBehaviour(CarouselTimerBehaviour TimerBehaviour);
         __declspec(property(get=get_TimerBehaviour, put=set_TimerBehaviour)) CarouselTimerBehaviour TimerBehaviour;
 
+        CarouselAlignment get_Alignment() const { return _carouselAlignment; }
+        void set_Alignment(CarouselAlignment alignment);
+        __declspec(property(get=get_Alignment, put=set_Alignment)) CarouselAlignment Alignment;
+
         float get_TimerLength() const { return _timerLength; }
         void set_TimerLength(float timerLength) { _timerLength = timerLength; }
         __declspec(property(get=get_TimerLength, put=set_TimerLength)) float TimerLength;
@@ -132,7 +148,11 @@ DECLARE_CLASS_CODEGEN(Umbrella::UI, Carousel, UnityEngine::MonoBehaviour,
 
         bool get_PauseOnHover() const { return _pauseOnHover; }
         void set_PauseOnHover(bool pauseOnHover) { _pauseOnHover = pauseOnHover; }
-        __declspec(property(get=PauseOnHover, put=PauseOnHover)) bool PauseOnHover;
+        __declspec(property(get=get_PauseOnHover, put=set_PauseOnHover)) bool PauseOnHover;
+
+        float get_InactiveAlpha() const { return _inactiveAlpha; }
+        void set_InactiveAlpha(float inactiveAlpha);
+        __declspec(property(get=get_InactiveAlpha, put=set_InactiveAlpha)) float InactiveAlpha;
 
         /// @brief skips to next using timer behaviour
         void Skip();
@@ -151,10 +171,11 @@ DECLARE_CLASS_CODEGEN(Umbrella::UI, Carousel, UnityEngine::MonoBehaviour,
         int _currentChildIndex;
         int _movingDirection;
         bool _isAnimating;
+        bool _startRealignNextFrame;
 
         void UpdateViewport();
         void SetContentSize(float size);
-        void SetBubbleActive(int index);
+        void SetActiveBubble(int index);
 
         /// @brief clamps the input index, or advances with timer behaviour taken into account
         int ClampedWithTimerBehaviour(int index);
@@ -168,26 +189,31 @@ DECLARE_CLASS_CODEGEN(Umbrella::UI, Carousel, UnityEngine::MonoBehaviour,
         /// @brief updates whether the buttons are interactable based on the state of the carousel
         void UpdateButtonsInteractable();
 
-        /// @brief rearranges the ticker to be at location and direction
-        void MoveTicker(CarouselLocation location, CarouselDirection direction, bool force = false);
         void SetTickerVertical();
         void SetTickerHorizontal();
         void SetContentVertical();
         void SetContentHorizontal();
 
+        /// @brief rearranges the ticker to be at location and direction
+        void MoveTicker(CarouselLocation location, CarouselDirection direction, bool force = false);
+
         void OnPointerEnterViewport();
         void OnPointerExitViewport();
+
+        void SetAlphaToGroups(int index);
 
         custom_types::Helpers::Coroutine GotoChild(int childIndex, bool animated = true);
 
         CarouselDirection _carouselDirection;
         CarouselLocation _carouselLocation;
         CarouselTimerBehaviour _carouselTimerBehaviour;
+        CarouselAlignment _carouselAlignment;
         float _timerLength;
         float _timer;
         bool _showButtons;
         bool _pauseOnHover;
         bool _beingHovered;
+        float _inactiveAlpha;
 
         bool get_TimerPassed() const { return _timerLength >= 0 && _timer > _timerLength; }
         __declspec(property(get=get_TimerPassed)) bool TimerPassed;
@@ -204,5 +230,6 @@ struct il2cpp_utils::il2cpp_type_check::il2cpp_no_arg_class<e> { \
 SIMPLE_ENUM_CLASSOF(Umbrella::UI::Carousel::CarouselTimerBehaviour);
 SIMPLE_ENUM_CLASSOF(Umbrella::UI::Carousel::CarouselDirection);
 SIMPLE_ENUM_CLASSOF(Umbrella::UI::Carousel::CarouselLocation);
+SIMPLE_ENUM_CLASSOF(Umbrella::UI::Carousel::CarouselAlignment);
 
 #undef SIMPLE_ENUM_CLASSOF

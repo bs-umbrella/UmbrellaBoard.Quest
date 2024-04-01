@@ -22,7 +22,10 @@ namespace Umbrella::UI {
         INVOKE_CTOR();
         _movingDirection = 1;
         _carouselBubbles = ListW<CarouselBubble*>::New();
-        _timerLength = 10.0f;
+        _carouselCanvasGroups = ListW<UnityEngine::CanvasGroup*>::New();
+        _timerLength = 5.0f;
+        _inactiveAlpha = 0.2f;
+        _carouselAlignment = CarouselAlignment::Center;
     }
 
     void Carousel::Update() {
@@ -34,7 +37,16 @@ namespace Umbrella::UI {
             if (TimerPassed) { // if the timer passed, advance selection
                 AdvanceWithTimer();
             }
+
+            if (_startRealignNextFrame) {
+                _startRealignNextFrame = false;
+                StartCoroutine(custom_types::Helpers::CoroutineHelper::New(GotoChild(_currentChildIndex, true)));
+            }
         }
+    }
+
+    void Carousel::OnEnable() {
+        _startRealignNextFrame = true;
     }
 
     void Carousel::OnDestroy() {
@@ -80,7 +92,7 @@ namespace Umbrella::UI {
             } break;
         }
 
-        StartCoroutine(custom_types::Helpers::CoroutineHelper::New(GotoChild(nextChild, false)));
+        StartCoroutine(custom_types::Helpers::CoroutineHelper::New(GotoChild(nextChild, true)));
     }
 
     int Carousel::ClampedWithTimerBehaviour(int index) {
@@ -346,22 +358,34 @@ namespace Umbrella::UI {
         auto parent = _bubblePrefab->transform->parent;
         _bubblePrefab->AddComponent<CarouselBubble*>();
 
+        _carouselBubbles->EnsureCapacity(childCount);
+        _carouselCanvasGroups->EnsureCapacity(childCount);
         for (int i = 0; i < childCount; i++) {
-            auto bubble = UnityEngine::Object::Instantiate(_bubblePrefab, parent);
-            bubble->transform->localScale = {0.7, 0.7, 0.7};
-            _carouselBubbles->Add(bubble->GetComponent<CarouselBubble*>());
-            bubble->SetActive(true);
+            auto bubbleGO = UnityEngine::Object::Instantiate(_bubblePrefab, parent);
+            bubbleGO->transform->localScale = {0.7, 0.7, 0.7};
+            auto bubble = bubbleGO->GetComponent<CarouselBubble*>();
+            _carouselBubbles->Add(bubble);
+
+            auto child = _content->GetChild(i);
+            _carouselCanvasGroups->Add(child->gameObject->AddComponent<UnityEngine::CanvasGroup*>());
+            bubbleGO->SetActive(true);
         }
 
         _nextButton->transform->SetAsLastSibling();
 
-        SetBubbleActive(_currentChildIndex);
         UpdateViewport();
+        StartCoroutine(custom_types::Helpers::CoroutineHelper::New(GotoChild(_currentChildIndex, false)));
     }
 
-    void Carousel::SetBubbleActive(int index) {
+    void Carousel::SetActiveBubble(int index) {
         for (int i = 0; auto bubble : _carouselBubbles) {
             bubble->Highlighted = index == i++;
+        }
+    }
+
+    void Carousel::SetAlphaToGroups(int index) {
+        for (int i = 0; auto group : _carouselCanvasGroups) {
+            group->alpha = index == i++ ? 1.0f : _inactiveAlpha;
         }
     }
 
@@ -380,38 +404,73 @@ namespace Umbrella::UI {
 
     custom_types::Helpers::Coroutine Carousel::GotoChild(int childIndex, bool animated) {
         if (_isAnimating) co_return;
+        if (childIndex >= _content->childCount || childIndex < 0) co_return;
         _isAnimating = true;
 
-        auto currentChildPos = _content->GetChild(_currentChildIndex).cast<UnityEngine::RectTransform>()->anchoredPosition;
-        auto targetChildPos = _content->GetChild(childIndex).cast<UnityEngine::RectTransform>()->anchoredPosition;
+        auto currentChild = _content->GetChild(_currentChildIndex).cast<UnityEngine::RectTransform>();
+        auto targetChild = _content->GetChild(childIndex).cast<UnityEngine::RectTransform>();
 
-        auto currentContentPos = _content->anchoredPosition;
-        auto targetContentPos = _content->anchoredPosition;
-        switch (_carouselDirection) {
-            using enum CarouselDirection;
-            case Horizontal: {
-                auto delta = targetChildPos.x - currentChildPos.x;
-                targetContentPos.x -= delta;
+        auto targetPos = targetChild->anchoredPosition;
+        auto childRect = targetChild->rect;
+        auto viewPortRect = _viewPort->rect;
+
+        auto currentPos = _content->anchoredPosition;
+
+        // setup alignment
+        switch (_carouselAlignment) {
+            using enum CarouselAlignment;
+            case Beginning: { // to get beginning we have to subtract half the childrect sizes
+                targetPos.x -= childRect.width * 0.5f;
+                targetPos.y -= childRect.height * 0.5f;
             } break;
-            case Vertical: {
-                auto delta = targetChildPos.y - currentChildPos.y;
-                targetContentPos.y -= delta;
+            case Center: { // to get center we just subtract half the viewport size
+                targetPos.x -= viewPortRect.width * 0.5f;
+                targetPos.y -= viewPortRect.height * 0.5f;
+            } break;
+            case End: { // to get end we add have to add half the childrect sizes and subtract the entire viewport rect
+                targetPos.x += childRect.width * 0.5f;
+                targetPos.x -= viewPortRect.width;
+                targetPos.y += childRect.height * 0.5f;
+                targetPos.y -= viewPortRect.height;
             } break;
         }
 
+
+        // 0 on the non used axis and flip the other
+        switch (_carouselDirection) {
+            using enum CarouselDirection;
+            case Horizontal: {
+                targetPos.y = 0;
+                targetPos.x *= -1;
+            } break;
+            case Vertical: {
+                targetPos.x = 0;
+                targetPos.y *= -1;
+            } break;
+        }
+
+        SetActiveBubble(childIndex);
+        auto oldCanvasGroup = _carouselCanvasGroups[_currentChildIndex];
+        auto newCanvasGroup = _carouselCanvasGroups[childIndex];
+
+        float oldAlpha = oldCanvasGroup->alpha;
+        float newAlpha = newCanvasGroup->alpha;
+
+        // if animated, move it
         if (animated) {
             for (auto t = 0.0f; t < 1.0f; t += UnityEngine::Time::get_deltaTime() * 5.0f) {
-                _content->anchoredPosition = lerp(currentContentPos, targetContentPos, eased_t(t));
+                float eased = eased_t(t);
+                _content->anchoredPosition = lerp(currentPos, targetPos, eased);
+                oldCanvasGroup->alpha = lerp(oldAlpha, _inactiveAlpha, eased);
+                newCanvasGroup->alpha = lerp(newAlpha, 1.0f, eased);
                 co_yield nullptr;
             }
         }
 
-        _content->anchoredPosition = targetContentPos;
-
-        SetBubbleActive(childIndex);
-
+        _content->anchoredPosition = targetPos;
         _currentChildIndex = childIndex;
         UpdateButtonsInteractable();
+        SetAlphaToGroups(_currentChildIndex);
 
         _isAnimating = false;
         _timer = 0;
@@ -441,9 +500,19 @@ namespace Umbrella::UI {
         UpdateButtonsInteractable();
     }
 
+    void Carousel::set_Alignment(CarouselAlignment alignment) {
+        _carouselAlignment = alignment;
+        StartCoroutine(custom_types::Helpers::CoroutineHelper::New(GotoChild(_currentChildIndex, false)));
+    }
+
     void Carousel::set_ShowButtons(bool showButtons) {
         _nextButton->gameObject->SetActive(showButtons);
         _prevButton->gameObject->SetActive(showButtons);
+    }
+
+    void Carousel::set_InactiveAlpha(float inactiveAlpha) {
+        _inactiveAlpha = inactiveAlpha;
+        SetAlphaToGroups(_currentChildIndex);
     }
 
     void CarouselBubble::ctor() {
