@@ -36,7 +36,7 @@ namespace Umbrella {
         this->_alignment = HMUI::NavigationController::Alignment::Beginning;
     }
 
-    void BoardViewController::Inject(GlobalNamespace::MainFlowCoordinator* mainFlowCoordinator, Views::CommunitiesView* communitiesView, Views::PageView* pageView) {
+    void BoardViewController::Inject(GlobalNamespace::MainFlowCoordinator* mainFlowCoordinator, UI::Views::CommunitiesView* communitiesView, UI::Views::PageView* pageView) {
         _mainFlowCoordinator = mainFlowCoordinator;
         _communitiesView = communitiesView;
         _pageView = pageView;

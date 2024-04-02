@@ -1,5 +1,4 @@
 #include "UI/Views/CommunitiesView.hpp"
-#include "LoadingControl.hpp"
 #include "logging.hpp"
 #include "assets.hpp"
 #include "config.hpp"

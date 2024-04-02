@@ -1,5 +1,4 @@
 #include "UI/Views/PageView.hpp"
-#include "LoadingControl.hpp"
 #include "bsml/shared/BSML.hpp"
 #include "assets.hpp"
 #include "logging.hpp"
