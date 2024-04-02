@@ -385,7 +385,9 @@ namespace Umbrella::UI {
 
     void Carousel::SetAlphaToGroups(int index) {
         for (int i = 0; auto group : _carouselCanvasGroups) {
-            group->alpha = index == i++ ? 1.0f : _inactiveAlpha;
+            bool isActiveGroup = index == i++;
+            group->alpha = isActiveGroup ? 1.0f : _inactiveAlpha;
+            group->interactable = isActiveGroup;
         }
     }
 
