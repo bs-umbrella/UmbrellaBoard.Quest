@@ -17,6 +17,10 @@ namespace Umbrella::Views {
         _bsmlReady = false;
     }
 
+    void PageView::Awake() {
+        gameObject->AddComponent<UnityEngine::CanvasGroup*>();
+    }
+
     void PageView::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
         if (firstActivation) {
             _loadingControl = gameObject->AddComponent<LoadingControl*>();

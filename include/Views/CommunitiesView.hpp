@@ -25,6 +25,7 @@ DECLARE_CLASS_CODEGEN_INTERFACES(Umbrella::Views, CommunitiesView, HMUI::ViewCon
 
         DECLARE_INSTANCE_FIELD_PRIVATE(BSML::CustomListTableData*, _bsmlCommunityList);
 
+        DECLARE_INSTANCE_METHOD(void, Awake);
         DECLARE_INSTANCE_METHOD(void, Update);
         DECLARE_INSTANCE_METHOD(void, PostParse);
         DECLARE_INSTANCE_METHOD(void, HandleCommunitySelected, HMUI::TableView* tableView, int selectedCell);

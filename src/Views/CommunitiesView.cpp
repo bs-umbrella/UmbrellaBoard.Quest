@@ -21,6 +21,10 @@ namespace Umbrella::Views {
         _downloader.TimeOut = TIMEOUT;
     }
 
+    void CommunitiesView::Awake() {
+        gameObject->AddComponent<UnityEngine::CanvasGroup*>();
+    }
+
     void CommunitiesView::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
         if (firstActivation) {
             _loadingControl = gameObject->AddComponent<LoadingControl*>();

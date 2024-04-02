@@ -17,6 +17,7 @@ DECLARE_CLASS_CODEGEN(Umbrella::Views, PageView, HMUI::ViewController,
         DECLARE_INSTANCE_METHOD(void, Refresh);
         DECLARE_INSTANCE_METHOD(void, ClearHistory);
         DECLARE_INSTANCE_METHOD(void, Update);
+        DECLARE_INSTANCE_METHOD(void, Awake);
 
     public:
         UnorderedEventCallback<> HistoryWasCleared;
