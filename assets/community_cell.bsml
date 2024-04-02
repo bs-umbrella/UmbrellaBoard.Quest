@@ -1,0 +1,7 @@
+<stack pref-width='20' pref-height='10' vertical-fit='PreferredSize' horizontal-fit='PreferredSize'>
+    <!-- viewport -->
+    <img id='_mask' src='#RoundRect10'>
+        <img id='_communityBackground' preserve-aspect='true'/>
+        <text id='_communityName' font-size='3' font-align='Center' />
+    </img>
+</stack>

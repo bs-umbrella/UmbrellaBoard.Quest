@@ -50,6 +50,7 @@ DECLARE_CLASS_CODEGEN_INTERFACES(Umbrella::UI::Views, CommunitiesView, HMUI::Vie
 DECLARE_CLASS_CODEGEN(Umbrella::UI::Views, CommunityCell, HMUI::TableCell,
         DECLARE_INSTANCE_FIELD_PRIVATE(TMPro::TextMeshProUGUI*, _communityName);
         DECLARE_INSTANCE_FIELD_PRIVATE(HMUI::ImageView*, _communityBackground);
+        DECLARE_INSTANCE_FIELD_PRIVATE(HMUI::ImageView*, _mask);
 
         DECLARE_OVERRIDE_METHOD_MATCH(void, HighlightDidChange, &HMUI::SelectableCell::HighlightDidChange, HMUI::SelectableCell::TransitionType transitionType);
         DECLARE_OVERRIDE_METHOD_MATCH(void, SelectionDidChange, &HMUI::SelectableCell::SelectionDidChange, HMUI::SelectableCell::TransitionType transitionType);

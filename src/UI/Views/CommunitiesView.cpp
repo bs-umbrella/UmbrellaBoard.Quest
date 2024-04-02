@@ -5,7 +5,10 @@
 #include "_config.h"
 
 #include "System/Collections/Generic/HashSet_1.hpp"
+#include "UnityEngine/UI/Mask.hpp"
+
 #include "bsml/shared/BSML.hpp"
+#include "bsml/shared/Helpers/getters.hpp"
 #include "bsml/shared/Helpers/utilities.hpp"
 
 DEFINE_TYPE(Umbrella::UI::Views, CommunitiesView);
@@ -158,7 +161,18 @@ namespace Umbrella::UI::Views {
     CommunityCell* CommunityCell::GetCell() {
         auto gameObject = UnityEngine::GameObject::New_ctor("CommunityCell");
         auto cell = gameObject->AddComponent<CommunityCell*>();
-        BSML::parse_and_construct("<stack pref-width='20' pref-height='10' vertical-fit='PreferredSize' horizontal-fit='PreferredSize'><img id='_communityBackground'/><text id='_communityName' font-size='3' font-align='Center'/></stack>", cell->transform, cell);
+        BSML::parse_and_construct(Assets::community_cell_bsml, gameObject->transform, cell);
+
+        auto mask = cell->_mask->gameObject->AddComponent<UnityEngine::UI::Mask*>();
+        mask->showMaskGraphic = false;
+
+        auto maskImg = cell->_mask;
+        maskImg->type = UnityEngine::UI::Image::Type::Sliced;
+        maskImg->color = {1, 1, 1, 1};
+        maskImg->material = BSML::Helpers::GetUINoGlowMat();
+        // no raycasting on background image
+        cell->_communityBackground->raycastTarget = false;
+
         return cell;
     }
 
@@ -172,6 +186,7 @@ namespace Umbrella::UI::Views {
 
     void CommunityCell::UpdateHighlight() {
         _communityBackground->set_color(highlighted || selected ? UnityEngine::Color{1, 1, 1, 1} : UnityEngine::Color{0.6, 0.6, 0.6, 1});
+        _communityName->enabled = !(highlighted || selected);
     }
 
     CommunityCell* CommunityCell::SetData(std::string_view communityName, std::string_view communityURL, UnityEngine::Sprite* background) {
