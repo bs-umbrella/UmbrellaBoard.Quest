@@ -1,0 +1,13 @@
+<bg>
+    <horizontal pref-width='85' spacing='2' horizontal-fit='PreferredSize'>
+        <vertical>
+            <text text='Enabled' font-size='6' underlined='true' font-align='Center'/>
+            <list id='_enabledCommunitiesBSMLList' list-width='45' stick-scrolling='true'/>
+        </vertical>
+        <img src='#WhitePixel' pref-width='1'/>
+        <vertical>
+            <text text='Disabled' font-size='6' underlined='true' font-align='Center'/>
+            <list id='_disabledCommunitiesBSMLList' list-width='35' stick-scrolling='true'/>
+        </vertical>
+    </horizontal>
+</bg>

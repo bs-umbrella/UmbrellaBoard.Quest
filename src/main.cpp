@@ -17,6 +17,9 @@
 #include "UI/Views/CommunitiesView.hpp"
 #include "UI/Views/PageView.hpp"
 
+#include "UI/Settings/CommunityConfigurationView.hpp"
+#include "UI/Settings/SettingsFlowCoordinator.hpp"
+
 modloader::ModInfo modInfo{MOD_ID, VERSION, 0};
 
 UMBRELLA_EXPORT_FUNC void setup(CModInfo* info) {
@@ -37,6 +40,8 @@ UMBRELLA_EXPORT_FUNC void late_load() {
         Lapiz::Zenject::ZenjectExtensions::FromNewComponentAsViewController(container->BindInterfacesAndSelfTo<Umbrella::UI::Views::CommunitiesView*>())->AsSingle();
         Lapiz::Zenject::ZenjectExtensions::FromNewComponentAsViewController(container->BindInterfacesAndSelfTo<Umbrella::UI::Views::PageView*>())->AsSingle();
         Lapiz::Zenject::ZenjectExtensions::FromNewComponentAsViewController(container->BindInterfacesAndSelfTo<Umbrella::BoardViewController*>())->AsSingle();
+        Lapiz::Zenject::ZenjectExtensions::FromNewComponentAsViewController(container->BindInterfacesAndSelfTo<Umbrella::UI::Settings::CommunityConfigurationView*>())->AsSingle();
+        Lapiz::Zenject::ZenjectExtensions::FromNewComponentOnNewGameObject(container->BindInterfacesAndSelfTo<Umbrella::UI::Settings::SettingsFlowCoordinator*>())->AsSingle()->NonLazy();
         container->BindInterfacesAndSelfTo<Umbrella::BoardSetup*>()->AsSingle()->NonLazy();
     });
 }

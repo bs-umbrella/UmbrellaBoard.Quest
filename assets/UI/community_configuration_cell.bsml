@@ -1,0 +1,12 @@
+<horizontal id='_layout' pref-width='45' bg='round-rect-panel' bg-alpha='0.8' pref-height='15'>
+    <page-button id='_enableButton' direction='Left' on-click='MoveLeft' pref-height='6'/>
+    <img id='_mask' src='#RoundRect10'>
+        <img id='_background' preserve-aspect='true'/>
+        <text id='_communityName' font-size='3' font-align='Center'/>
+    </img>
+    <vertical id='_moveButtons' pref-width='6'>
+        <page-button id='_moveUpButton' direction='Up' on-click='MoveUp' pref-width='6'/>
+        <page-button id='_moveDownButton' direction='Down' on-click='MoveDown' pref-width='6'/>
+    </vertical>
+    <page-button id='_disableButton' direction='Right' on-click='MoveRight' pref-height='6'/>
+</horizontal>

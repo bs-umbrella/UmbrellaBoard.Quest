@@ -1,5 +1,5 @@
 <bg id='_parsedContentParent' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
     <vertical pref-height='60' pref-width='24' vertical-fit='PreferredSize' horizontal-fit='PreferredSize' bg-alpha='0.8' bg='round-rect-panel' pad='2'>
-        <list id='_bsmlCommunityList' pref-height='60' pref-width='20' list-width='20' select-cell='HandleCommunitySelected'/>
+        <list id='_bsmlCommunityList' pref-height='60' pref-width='20' list-width='20' select-cell='HandleCommunitySelected' stick-scrolling='true'/>
     </vertical>
 </bg>
