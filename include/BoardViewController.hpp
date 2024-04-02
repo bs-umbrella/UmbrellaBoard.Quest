@@ -12,17 +12,17 @@
 #include "UnityEngine/GameObject.hpp"
 #include "GlobalNamespace/MainFlowCoordinator.hpp"
 
-#include "Views/CommunitiesView.hpp"
-#include "Views/PageView.hpp"
+#include "UI/Views/CommunitiesView.hpp"
+#include "UI/Views/PageView.hpp"
 
 DECLARE_CLASS_CODEGEN_INTERFACES(Umbrella, BoardViewController, HMUI::NavigationController, std::vector<Il2CppClass*>({classof(Zenject::IInitializable*), classof(System::IDisposable*)}),
         DECLARE_CTOR(ctor);
 
-        DECLARE_INJECT_METHOD(void, Inject, GlobalNamespace::MainFlowCoordinator* mainFlowCoordinator, Views::CommunitiesView* communitiesView, Views::PageView* pageView);
+        DECLARE_INJECT_METHOD(void, Inject, GlobalNamespace::MainFlowCoordinator* mainFlowCoordinator, UI::Views::CommunitiesView* communitiesView, UI::Views::PageView* pageView);
 
         DECLARE_INSTANCE_FIELD_PRIVATE(GlobalNamespace::MainFlowCoordinator*, _mainFlowCoordinator);
-        DECLARE_INSTANCE_FIELD_PRIVATE(Views::CommunitiesView*, _communitiesView);
-        DECLARE_INSTANCE_FIELD_PRIVATE(Views::PageView*, _pageView);
+        DECLARE_INSTANCE_FIELD_PRIVATE(UI::Views::CommunitiesView*, _communitiesView);
+        DECLARE_INSTANCE_FIELD_PRIVATE(UI::Views::PageView*, _pageView);
         DECLARE_INSTANCE_FIELD_PRIVATE(HMUI::ViewController*, _activeViewController);
         DECLARE_INSTANCE_FIELD_PRIVATE(HMUI::ViewController*, _viewControllerToPresent);
 

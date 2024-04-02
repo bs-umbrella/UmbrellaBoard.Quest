@@ -1,5 +1,4 @@
 #include "BoardViewController.hpp"
-#include "LoadingControl.hpp"
 #include "bsml/shared/BSML.hpp"
 #include "bsml/shared/BSML/SharedCoroutineStarter.hpp"
 #include "assets.hpp"

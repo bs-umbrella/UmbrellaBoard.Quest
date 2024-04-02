@@ -3,9 +3,9 @@
 #include "custom-types/shared/macros.hpp"
 #include "HMUI/ViewController.hpp"
 #include "DownloaderUtility.hpp"
-#include "LoadingControl.hpp"
+#include "../LoadingControl.hpp"
 
-DECLARE_CLASS_CODEGEN(Umbrella::Views, PageView, HMUI::ViewController,
+DECLARE_CLASS_CODEGEN(Umbrella::UI::Views, PageView, HMUI::ViewController,
         DECLARE_CTOR(ctor);
         DECLARE_INSTANCE_FIELD_PRIVATE(LoadingControl*, _loadingControl);
         DECLARE_INSTANCE_FIELD_PRIVATE(UnityEngine::GameObject*, _parsedContentParent);

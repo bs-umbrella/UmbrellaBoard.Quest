@@ -1,10 +1,10 @@
-#include "LoadingControl.hpp"
+#include "UI/LoadingControl.hpp"
 #include "bsml/shared/BSML.hpp"
 #include "assets.hpp"
 
-DEFINE_TYPE(Umbrella, LoadingControl);
+DEFINE_TYPE(Umbrella::UI, LoadingControl);
 
-namespace Umbrella {
+namespace Umbrella::UI {
     void LoadingControl::Awake() {
         BSML::parse_and_construct(Assets::loading_content_bsml, transform, this);
         BSML::parse_and_construct(Assets::error_content_bsml, transform, this);

@@ -1,4 +1,4 @@
-#include "Views/CommunitiesView.hpp"
+#include "UI/Views/CommunitiesView.hpp"
 #include "LoadingControl.hpp"
 #include "logging.hpp"
 #include "assets.hpp"
@@ -9,10 +9,10 @@
 #include "bsml/shared/BSML.hpp"
 #include "bsml/shared/Helpers/utilities.hpp"
 
-DEFINE_TYPE(Umbrella::Views, CommunitiesView);
-DEFINE_TYPE(Umbrella::Views, CommunityCell);
+DEFINE_TYPE(Umbrella::UI::Views, CommunitiesView);
+DEFINE_TYPE(Umbrella::UI::Views, CommunityCell);
 
-namespace Umbrella::Views {
+namespace Umbrella::UI::Views {
     void CommunitiesView::ctor() {
         INVOKE_CTOR();
         HMUI::ViewController::_ctor();

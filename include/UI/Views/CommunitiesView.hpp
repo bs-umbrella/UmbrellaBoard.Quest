@@ -9,10 +9,10 @@
 #include "UnityEngine/Sprite.hpp"
 
 #include "bsml/shared/BSML/Components/CustomListTableData.hpp"
-#include "../DownloaderUtility.hpp"
+#include "../../DownloaderUtility.hpp"
 #include "../LoadingControl.hpp"
 
-DECLARE_CLASS_CODEGEN_INTERFACES(Umbrella::Views, CommunitiesView, HMUI::ViewController, classof(HMUI::TableView::IDataSource*),
+DECLARE_CLASS_CODEGEN_INTERFACES(Umbrella::UI::Views, CommunitiesView, HMUI::ViewController, classof(HMUI::TableView::IDataSource*),
         DECLARE_OVERRIDE_METHOD_MATCH(void, DidActivate, &HMUI::ViewController::DidActivate, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
 
         DECLARE_OVERRIDE_METHOD_MATCH(HMUI::TableCell*, CellForIdx, &HMUI::TableView::IDataSource::CellForIdx, HMUI::TableView* tableView, int idx);
@@ -47,7 +47,7 @@ DECLARE_CLASS_CODEGEN_INTERFACES(Umbrella::Views, CommunitiesView, HMUI::ViewCon
         DownloaderUtility _downloader;
 )
 
-DECLARE_CLASS_CODEGEN(Umbrella::Views, CommunityCell, HMUI::TableCell,
+DECLARE_CLASS_CODEGEN(Umbrella::UI::Views, CommunityCell, HMUI::TableCell,
         DECLARE_INSTANCE_FIELD_PRIVATE(TMPro::TextMeshProUGUI*, _communityName);
         DECLARE_INSTANCE_FIELD_PRIVATE(HMUI::ImageView*, _communityBackground);
 

@@ -1,4 +1,3 @@
-#include "Views/CommunitiesView.hpp"
 #include "logging.hpp"
 #include "hooking.hpp"
 #include "config.hpp"
@@ -15,8 +14,8 @@
 #include "BoardSetup.hpp"
 #include "BoardViewController.hpp"
 
-#include "Views/CommunitiesView.hpp"
-#include "Views/PageView.hpp"
+#include "UI/Views/CommunitiesView.hpp"
+#include "UI/Views/PageView.hpp"
 
 modloader::ModInfo modInfo{MOD_ID, VERSION, 0};
 
@@ -35,8 +34,8 @@ UMBRELLA_EXPORT_FUNC void late_load() {
 
     auto z = Lapiz::Zenject::Zenjector::Get();
     z->Install(Lapiz::Zenject::Location::Menu, [](Zenject::DiContainer* container){
-        Lapiz::Zenject::ZenjectExtensions::FromNewComponentAsViewController(container->BindInterfacesAndSelfTo<Umbrella::Views::CommunitiesView*>())->AsSingle();
-        Lapiz::Zenject::ZenjectExtensions::FromNewComponentAsViewController(container->BindInterfacesAndSelfTo<Umbrella::Views::PageView*>())->AsSingle();
+        Lapiz::Zenject::ZenjectExtensions::FromNewComponentAsViewController(container->BindInterfacesAndSelfTo<Umbrella::UI::Views::CommunitiesView*>())->AsSingle();
+        Lapiz::Zenject::ZenjectExtensions::FromNewComponentAsViewController(container->BindInterfacesAndSelfTo<Umbrella::UI::Views::PageView*>())->AsSingle();
         Lapiz::Zenject::ZenjectExtensions::FromNewComponentAsViewController(container->BindInterfacesAndSelfTo<Umbrella::BoardViewController*>())->AsSingle();
         container->BindInterfacesAndSelfTo<Umbrella::BoardSetup*>()->AsSingle()->NonLazy();
     });

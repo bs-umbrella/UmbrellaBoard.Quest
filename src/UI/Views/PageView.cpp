@@ -1,13 +1,13 @@
-#include "Views/PageView.hpp"
+#include "UI/Views/PageView.hpp"
 #include "LoadingControl.hpp"
 #include "bsml/shared/BSML.hpp"
 #include "assets.hpp"
 #include "logging.hpp"
 #include "_config.h"
 
-DEFINE_TYPE(Umbrella::Views, PageView);
+DEFINE_TYPE(Umbrella::UI::Views, PageView);
 
-namespace Umbrella::Views {
+namespace Umbrella::UI::Views {
     void PageView::ctor() {
         INVOKE_CTOR();
         HMUI::ViewController::_ctor();

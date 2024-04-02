@@ -5,7 +5,7 @@
 #include "UnityEngine/MonoBehaviour.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
 
-DECLARE_CLASS_CODEGEN(Umbrella, LoadingControl, UnityEngine::MonoBehaviour,
+DECLARE_CLASS_CODEGEN(Umbrella::UI, LoadingControl, UnityEngine::MonoBehaviour,
     DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, _loadingContent);
     DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, _loadingText);
     DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, _errorContent);
