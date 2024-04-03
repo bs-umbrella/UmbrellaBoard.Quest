@@ -24,12 +24,13 @@ DECLARE_CLASS_CODEGEN(Umbrella::UI::Views, PageView, HMUI::ViewController,
 
         /// @brief sets the url to open for the next present
         /// @return whether we entered a loading state
-        bool OpenPageNextPresent(std::string_view pageURL, bool addToHistory = true);
+        bool OpenPageNextPresent(std::string_view pageURL, bool addToHistory = true, bool ignoreHistory = false);
 
         /// @brief opens a new url page
         /// @param pageURL the url to go to
         /// @param addToHistory whether to add to history stack
-        void GotoPage(std::string_view pageURL, bool addToHistory = true);
+        /// @param ignoreHistory whether to ignore the history stack when going to the page
+        void GotoPage(std::string_view pageURL, bool addToHistory = true, bool ignoreHistory = false);
     private:
 
         void ShowLoading(bool isLoading, std::string_view loadingText = "");
@@ -42,6 +43,7 @@ DECLARE_CLASS_CODEGEN(Umbrella::UI::Views, PageView, HMUI::ViewController,
 
         std::string _nextPageToOpen;
         bool _nextPageToHistory;
+        bool _nextPageIgnoreHistory;
 
         bool _bsmlReady = false;
 )

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "custom-types/shared/macros.hpp"
+#include "lapiz/shared/macros.hpp"
+
 #include "Zenject/IInitializable.hpp"
 #include "System/IDisposable.hpp"
 #include "HMUI/FlowCoordinator.hpp"
@@ -10,9 +12,11 @@
 #include "UnityEngine/UI/Button.hpp"
 #include "UnityEngine/UI/LayoutElement.hpp"
 
+#include "CommunitiesView.hpp"
+
 #include "bsml/shared/BSML/Components/CustomListTableData.hpp"
 
-DECLARE_CLASS_CODEGEN(Umbrella::UI::Settings, CommunityConfigurationCell, HMUI::TableCell,
+DECLARE_CLASS_CODEGEN(Umbrella::UI::Views, CommunityConfigurationCell, HMUI::TableCell,
         DECLARE_CTOR(ctor);
         DECLARE_INSTANCE_FIELD_PRIVATE(HMUI::ImageView*, _background);
         DECLARE_INSTANCE_FIELD_PRIVATE(HMUI::ImageView*, _mask);
@@ -57,7 +61,7 @@ DECLARE_CLASS_CODEGEN(Umbrella::UI::Settings, CommunityConfigurationCell, HMUI::
         bool _enabledCell;
 )
 
-DECLARE_CLASS_CODEGEN_INTERFACES(Umbrella::UI::Settings, CommunityConfigurationCellListDataSource, UnityEngine::MonoBehaviour, classof(HMUI::TableView::IDataSource*),
+DECLARE_CLASS_CODEGEN_INTERFACES(Umbrella::UI::Views, CommunityConfigurationCellListDataSource, UnityEngine::MonoBehaviour, classof(HMUI::TableView::IDataSource*),
         DECLARE_CTOR(ctor);
         DECLARE_INSTANCE_FIELD(HMUI::TableView*, tableView);
 
@@ -73,14 +77,18 @@ DECLARE_CLASS_CODEGEN_INTERFACES(Umbrella::UI::Settings, CommunityConfigurationC
         void CommunityDidMove(CommunityConfigurationCell* cell, CommunityConfigurationCell::MoveDirection direction);
 );
 
-DECLARE_CLASS_CODEGEN(Umbrella::UI::Settings, CommunityConfigurationView, HMUI::ViewController,
+DECLARE_CLASS_CODEGEN(Umbrella::UI::Views, CommunityConfigurationView, HMUI::ViewController,
+        DECLARE_CTOR(ctor);
+
         DECLARE_INSTANCE_FIELD_PRIVATE(BSML::CustomListTableData*, _enabledCommunitiesBSMLList);
         DECLARE_INSTANCE_FIELD_PRIVATE(BSML::CustomListTableData*, _disabledCommunitiesBSMLList);
+        DECLARE_INSTANCE_FIELD_PRIVATE(CommunitiesView*, _communitiesView);
 
         DECLARE_INSTANCE_FIELD_PRIVATE(CommunityConfigurationCellListDataSource*, _disabledCommunitiesList);
         DECLARE_INSTANCE_FIELD_PRIVATE(CommunityConfigurationCellListDataSource*, _enabledCommunitiesList);
-        DECLARE_INSTANCE_METHOD(void, PostParse);
 
+        DECLARE_INSTANCE_METHOD(void, PostParse);
+        DECLARE_INJECT_METHOD(void, Inject, CommunitiesView* communitiesView);
         DECLARE_OVERRIDE_METHOD_MATCH(void, DidActivate, &HMUI::ViewController::DidActivate, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
     private:
         void RefreshLists();

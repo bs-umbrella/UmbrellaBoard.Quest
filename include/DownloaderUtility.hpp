@@ -3,7 +3,11 @@
 #include <future>
 #include <string_view>
 #include <unordered_map>
-#include "rapidjson/document.h"
+#if __has_include("beatsaber-hook/shared/config/rapidjson-utils.hpp")
+#include "beatsaber-hook/shared/config/rapidjson-utils.hpp"
+#else
+#include "rapidjson/Document.h"
+#endif
 
 namespace Umbrella {
     struct DownloaderUtility {

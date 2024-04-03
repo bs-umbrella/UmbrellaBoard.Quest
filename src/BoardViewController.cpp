@@ -1,14 +1,14 @@
 #include "BoardViewController.hpp"
-#include "bsml/shared/BSML.hpp"
-#include "bsml/shared/BSML/SharedCoroutineStarter.hpp"
+#include "UI/Views/CommunityConfigurationView.hpp"
+#include "config.hpp"
 #include "assets.hpp"
 #include "logging.hpp"
-#include "config.hpp"
+#include "bsml/shared/BSML.hpp"
+#include "bsml/shared/BSML/SharedCoroutineStarter.hpp"
 
 #include "UnityEngine/CanvasGroup.hpp"
 #include "UnityEngine/Time.hpp"
 #include "HMUI/Touchable.hpp"
-
 
 #include <chrono>
 #include <future>
@@ -36,20 +36,21 @@ namespace Umbrella {
         this->_alignment = HMUI::NavigationController::Alignment::Beginning;
     }
 
-    void BoardViewController::Inject(GlobalNamespace::MainFlowCoordinator* mainFlowCoordinator, UI::Views::CommunitiesView* communitiesView, UI::Views::PageView* pageView) {
+    void BoardViewController::Inject(GlobalNamespace::MainFlowCoordinator* mainFlowCoordinator, UI::Views::CommunitiesView* communitiesView, UI::Views::PageView* pageView, UI::Views::CommunityConfigurationView* communityConfigurationView) {
         _mainFlowCoordinator = mainFlowCoordinator;
         _communitiesView = communitiesView;
         _pageView = pageView;
+        _communityConfigurationView = communityConfigurationView;
     }
 
     void BoardViewController::Initialize() {
         _communitiesView->CommunityWasSelected += {&BoardViewController::CommunityWasSelected, this};
-        _pageView->HistoryWasCleared += {&BoardViewController::StartRefreshContent, this};
+        _pageView->HistoryWasCleared += {&BoardViewController::DiscoverCommunities, this};
     }
 
     void BoardViewController::Dispose() {
         _communitiesView->CommunityWasSelected -= {&BoardViewController::CommunityWasSelected, this};
-        _pageView->HistoryWasCleared -= {&BoardViewController::StartRefreshContent, this};
+        _pageView->HistoryWasCleared -= {&BoardViewController::DiscoverCommunities, this};
     }
 
     void BoardViewController::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
@@ -64,11 +65,33 @@ namespace Umbrella {
             BSML::parse_and_construct(Assets::header_content_bsml, transform, this);
         }
 
-        StartRefreshContent();
+        if (addedToHierarchy) {
+            DiscoverCommunities();
+        }
     }
 
-    void BoardViewController::StartRefreshContent() {
+    void BoardViewController::PostParse() {
+        _navButtons->transform->GetChild(0)->eulerAngles = {0, 0, -90};
+    }
+
+    void BoardViewController::DiscoverCommunities() {
         _communitiesView->RefreshCommunities(config.communitiesDiscoveryURL);
+        SwitchDisplayedView(_pageView);
+    }
+
+    void BoardViewController::BackPage() {
+        _pageView->Back();
+    }
+
+    void BoardViewController::RefreshPage() {
+        _pageView->Refresh();
+    }
+
+    void BoardViewController::OpenCommunityConfig() {
+        SwitchDisplayedView(_communityConfigurationView);
+    }
+
+    void BoardViewController::CloseCommunityConfig() {
         SwitchDisplayedView(_pageView);
     }
 
@@ -109,6 +132,13 @@ namespace Umbrella {
         if (_viewControllerToPresent) return;
 
         _viewControllerToPresent = targetView;
+        // if the presented view is the community config view, disable the nav buttons
+        _navButtons->SetActive(_viewControllerToPresent != _communityConfigurationView);
+
+        // if we are going to settings, set open inactive and set close active
+        _openSettings->SetActive(_viewControllerToPresent != _communityConfigurationView);
+        _closeSettings->SetActive(_viewControllerToPresent == _communityConfigurationView);
+
         // we had an active one, so remove it and wait for push to conclude
         if (_activeViewController != nullptr) {
             BSML::SharedCoroutineStarter::StartCoroutine(custom_types::Helpers::CoroutineHelper::New(FadeOutOverSeconds(_activeViewController, FADE_OUT_TIME)));

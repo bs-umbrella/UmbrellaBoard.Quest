@@ -16,9 +16,7 @@
 
 #include "UI/Views/CommunitiesView.hpp"
 #include "UI/Views/PageView.hpp"
-
-#include "UI/Settings/CommunityConfigurationView.hpp"
-#include "UI/Settings/SettingsFlowCoordinator.hpp"
+#include "UI/Views/CommunityConfigurationView.hpp"
 
 modloader::ModInfo modInfo{MOD_ID, VERSION, 0};
 
@@ -39,9 +37,8 @@ UMBRELLA_EXPORT_FUNC void late_load() {
     z->Install(Lapiz::Zenject::Location::Menu, [](Zenject::DiContainer* container){
         Lapiz::Zenject::ZenjectExtensions::FromNewComponentAsViewController(container->BindInterfacesAndSelfTo<Umbrella::UI::Views::CommunitiesView*>())->AsSingle();
         Lapiz::Zenject::ZenjectExtensions::FromNewComponentAsViewController(container->BindInterfacesAndSelfTo<Umbrella::UI::Views::PageView*>())->AsSingle();
+        Lapiz::Zenject::ZenjectExtensions::FromNewComponentAsViewController(container->BindInterfacesAndSelfTo<Umbrella::UI::Views::CommunityConfigurationView*>())->AsSingle();
         Lapiz::Zenject::ZenjectExtensions::FromNewComponentAsViewController(container->BindInterfacesAndSelfTo<Umbrella::BoardViewController*>())->AsSingle();
-        Lapiz::Zenject::ZenjectExtensions::FromNewComponentAsViewController(container->BindInterfacesAndSelfTo<Umbrella::UI::Settings::CommunityConfigurationView*>())->AsSingle();
-        Lapiz::Zenject::ZenjectExtensions::FromNewComponentOnNewGameObject(container->BindInterfacesAndSelfTo<Umbrella::UI::Settings::SettingsFlowCoordinator*>())->AsSingle()->NonLazy();
         container->BindInterfacesAndSelfTo<Umbrella::BoardSetup*>()->AsSingle()->NonLazy();
     });
 }

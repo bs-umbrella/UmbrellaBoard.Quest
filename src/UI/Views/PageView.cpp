@@ -34,7 +34,7 @@ namespace Umbrella::UI::Views {
         }
 
         if (!_nextPageToOpen.empty()) {
-            GotoPage(_nextPageToOpen, _nextPageToHistory);
+            GotoPage(_nextPageToOpen, _nextPageToHistory, _nextPageIgnoreHistory);
             _nextPageToOpen.clear();
         } else if (addedToHierarchy) {
             _visitedPages.emplace("placeholder");
@@ -90,13 +90,14 @@ namespace Umbrella::UI::Views {
         BSML::parse_and_construct(content, t, this);
     }
 
-    bool PageView::OpenPageNextPresent(std::string_view pageURL, bool addToHistory) {
-        if (!_visitedPages.empty() && _visitedPages.top() == pageURL) return false;
+    bool PageView::OpenPageNextPresent(std::string_view pageURL, bool addToHistory, bool ignoreHistory) {
+        if (!_visitedPages.empty() && !ignoreHistory && _visitedPages.top() == pageURL) return false;
         if (pageURL.empty()) return false;
 
         ShowLoading(true, "Loading page...");
         _nextPageToOpen = pageURL;
         _nextPageToHistory = addToHistory;
+        _nextPageIgnoreHistory = ignoreHistory;
 
         return true;
     }
@@ -105,9 +106,16 @@ namespace Umbrella::UI::Views {
         GotoPage(std::string(pageURL));
     }
 
-    void PageView::GotoPage(std::string_view pageURL, bool addToHistory) {
-        if (!_visitedPages.empty() && _visitedPages.top() == pageURL) return;
+    void PageView::GotoPage(std::string_view pageURL, bool addToHistory, bool ignoreHistory) {
+        if (!_visitedPages.empty() && !ignoreHistory && _visitedPages.top() == pageURL) return;
         if (pageURL.empty()) return;
+
+        if (pageURL == "placeholder") {
+            ShowLoading(false);
+            _placeHolderContent->SetActive(true);
+            _parsedContentParent->SetActive(false);
+            return;
+        }
 
         _responseFuture = _downloader.GetString(pageURL);
         ShowLoading(true, "Loading page...");
@@ -115,19 +123,19 @@ namespace Umbrella::UI::Views {
     }
 
     void PageView::Back() {
-        if (_visitedPages.empty()) return;
+        if (_visitedPages.size() <= 1) return;
 
         // remove one
         _visitedPages.pop();
         // go to new current top
-        GotoPage(_visitedPages.top(), false);
+        GotoPage(_visitedPages.top(), false, true);
     }
 
     void PageView::Refresh() {
         if (_visitedPages.empty()) return;
 
         // go to current top
-        GotoPage(_visitedPages.top(), false);
+        GotoPage(_visitedPages.top(), false, true);
     }
 
     void PageView::ClearHistory() {

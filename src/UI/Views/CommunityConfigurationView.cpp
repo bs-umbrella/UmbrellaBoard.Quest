@@ -1,4 +1,4 @@
-#include "UI/Settings/CommunityConfigurationView.hpp"
+#include "UI/Views/CommunityConfigurationView.hpp"
 #include "bsml/shared/BSML.hpp"
 #include "bsml/shared/Helpers/utilities.hpp"
 #include "assets.hpp"
@@ -8,15 +8,29 @@
 #include "UnityEngine/UI/Mask.hpp"
 #include <utility>
 
-DEFINE_TYPE(Umbrella::UI::Settings, CommunityConfigurationView);
-DEFINE_TYPE(Umbrella::UI::Settings, CommunityConfigurationCell);
-DEFINE_TYPE(Umbrella::UI::Settings, CommunityConfigurationCellListDataSource);
+DEFINE_TYPE(Umbrella::UI::Views, CommunityConfigurationView);
+DEFINE_TYPE(Umbrella::UI::Views, CommunityConfigurationCell);
+DEFINE_TYPE(Umbrella::UI::Views, CommunityConfigurationCellListDataSource);
 
-namespace Umbrella::UI::Settings {
+namespace Umbrella::UI::Views {
+    void CommunityConfigurationView::ctor() {
+        INVOKE_CTOR();
+        HMUI::ViewController::_ctor();
+    }
+
+    void CommunityConfigurationView::Inject(CommunitiesView* communitiesView) {
+        _communitiesView = communitiesView;
+    }
+
     void CommunityConfigurationView::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
         if (firstActivation) {
             gameObject->AddComponent<UnityEngine::CanvasGroup*>();
             BSML::parse_and_construct(Assets::UI::community_configuration_view_bsml, transform, this);
+            auto r = rectTransform;
+
+            r->sizeDelta = {100, 0};
+            r->anchorMin = {0.5, 0};
+            r->anchorMax = {0.5, 1};
         }
 
         RefreshLists();
@@ -48,8 +62,8 @@ namespace Umbrella::UI::Settings {
     }
 
     void CommunityConfigurationView::RefreshLists() {
-        _enabledCommunitiesList->tableView->ReloadData();
-        _disabledCommunitiesList->tableView->ReloadData();
+        _enabledCommunitiesList->tableView->ReloadDataKeepingPosition();
+        _disabledCommunitiesList->tableView->ReloadDataKeepingPosition();
     }
 
     void CommunityConfigurationView::CommunityDidMove(CommunityConfigurationCell* cell, CommunityConfigurationCell::MoveDirection direction) {
@@ -71,6 +85,8 @@ namespace Umbrella::UI::Settings {
 
         SaveConfig();
         RefreshLists();
+
+        _communitiesView->RefreshCommunitiesNoRequest();
     }
 
     void CommunityConfigurationView::EnableCommunity(CommunityConfigurationCell* cell) {
@@ -132,7 +148,7 @@ namespace Umbrella::UI::Settings {
     }
 
     float CommunityConfigurationCellListDataSource::CellSize() {
-        return 17.0f;
+        return 15.0f;
     }
 
     int CommunityConfigurationCellListDataSource::NumberOfCells() {

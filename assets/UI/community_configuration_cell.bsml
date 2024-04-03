@@ -1,6 +1,6 @@
-<horizontal id='_layout' pref-width='45' bg='round-rect-panel' bg-alpha='0.8' pref-height='15'>
+<horizontal id='_layout' pref-width='45' bg='round-rect-panel' bg-alpha='0.8' pref-height='12'>
     <page-button id='_enableButton' direction='Left' on-click='MoveLeft' pref-height='6'/>
-    <img id='_mask' src='#RoundRect10'>
+    <img id='_mask' src='#RoundRect10' pref-width='24'>
         <img id='_background' preserve-aspect='true'/>
         <text id='_communityName' font-size='3' font-align='Center'/>
     </img>

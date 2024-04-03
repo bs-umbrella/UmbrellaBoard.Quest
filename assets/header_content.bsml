@@ -1,8 +1,13 @@
-<bg id='_headerContent' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
-    <horizontal pref-height='15' anchor-pos-y='40' pref-width='120' bg='title-gradient' bg-color0='#ff69b4ff' bg-color1='#ff69b400' child-expand-height='false' child-align='MiddleCenter'>
-        <text id='_headerText' text='Umbrella Board' font-size='8' font-align='Center'/>
+<bg id='_headerContent' anchor-pos-y='40' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
+    <horizontal pref-height='12' pref-width='120' bg='title-gradient' bg-color0='#ff69b4ff' bg-color1='#ff69b400' child-expand-height='false' child-align='MiddleCenter'>
+        <text id='_headerText' text='Umbrella Board' font-size='10' font-align='Center'/>
     </horizontal>
-    <stack ignore-layout='true' min-width='10' min-height='10' vertical-fit='MinSize' horizontal-fit='MinSize' anchor-pos-y='40' anchor-pos-x='45'>
-        <clickable-image src='#ReloadIcon' on-click='StartRefreshContent' preserve-aspect='true' hover-hint='Refresh Content'/>
-    </stack>
+    <horizontal id='_navButtons' pref-height='8' pref-width='22' vertical-fit='PreferredSize' horizontal-fit='PreferredSize' child-control-height='false' spacing='2' anchor-pos-x='-45'>
+        <clickable-image src='#ArrowIcon' on-click='BackPage' preserve-aspect='true' hover-hint='Go back a page'/>
+        <clickable-image src='#ReloadIcon' on-click='RefreshPage' preserve-aspect='true' hover-hint='Refresh Page'/>
+    </horizontal>
+    <horizontal id='_settingsButtons' pref-height='8' pref-width='10' vertical-fit='PreferredSize' horizontal-fit='PreferredSize' child-control-height='false' spacing='2' anchor-pos-x='40'>
+        <clickable-image id='_openSettings' src='#SettingsIcon' on-click='OpenCommunityConfig' preserve-aspect='true' hover-hint='Community Config'/>
+        <clickable-image id='_closeSettings' src='#CloseIcon' active='false' on-click='CloseCommunityConfig' preserve-aspect='true' hover-hint='Community Config'/>
+    </horizontal>
 </bg>

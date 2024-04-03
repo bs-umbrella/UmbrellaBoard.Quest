@@ -35,6 +35,9 @@ DECLARE_CLASS_CODEGEN_INTERFACES(Umbrella::UI::Views, CommunitiesView, HMUI::Vie
         /// @brief downloads a json at the location given and parses it for community information
         void RefreshCommunities(std::string_view communitiesURL);
 
+        /// @brief just reloads the communities list from the config, no request
+        void RefreshCommunitiesNoRequest();
+
         UnorderedEventCallback<std::string_view> CommunityWasSelected;
 
         HMUI::TableView::IDataSource* i_IDataSource() noexcept { return reinterpret_cast<HMUI::TableView::IDataSource*>(this); }

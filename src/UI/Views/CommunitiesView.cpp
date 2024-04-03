@@ -52,6 +52,10 @@ namespace Umbrella::UI::Views {
         _responseFuture = _downloader.GetJson(communitiesURL);
     }
 
+    void CommunitiesView::RefreshCommunitiesNoRequest() {
+        _tableView->ReloadDataKeepingPosition();
+    }
+
     HMUI::TableCell* CommunitiesView::CellForIdx(HMUI::TableView* tableView, int32_t idx) {
         auto cell = tableView->DequeueReusableCellForIdentifier("UmbrellaCommunities").try_cast<CommunityCell>().value_or(nullptr);
 
@@ -110,7 +114,6 @@ namespace Umbrella::UI::Views {
             WARNING("No additional quest communities were discovered through discovery URL");
             return;
         }
-
 
         for (auto const& community : questDiscoveryItr->value.GetArray()) {
             Community parsedCommunity;
