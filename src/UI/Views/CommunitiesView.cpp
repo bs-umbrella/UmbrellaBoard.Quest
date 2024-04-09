@@ -199,7 +199,6 @@ namespace Umbrella::UI::Views {
         _communityName->text = communityName;
         _communityURL = communityURL;
         _communityBackground->set_sprite(background);
-        _communityBackground->set_color({0.8, 0.8, 0.8, 1});
 
         return this;
     }
@@ -208,7 +207,6 @@ namespace Umbrella::UI::Views {
         _communityName->text = communityName;
         _communityURL = communityURL;
         BSML::Utilities::SetImage(_communityBackground, backgroundURL);
-        _communityBackground->set_color({0.8, 0.8, 0.8, 1});
 
         return this;
     }
