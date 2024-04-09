@@ -125,10 +125,10 @@ namespace Umbrella::UI {
             // pingpong and none should stop advancing beyond bounds
             case PingPong: [[fallthrough]];
             case None: {
-                // if >= count not interactable
-                _nextButton->interactable = _currentChildIndex >= _content->childCount;
-                // if <= 0 not interactable
-                _prevButton->interactable = _currentChildIndex <= 0;
+                // if child index smaller than count, interactable
+                _nextButton->interactable = _currentChildIndex < (_content->childCount - 1);
+                // if child index greater than 0 (and we have at least 1 child), interactable
+                _prevButton->interactable = _currentChildIndex > 0 && _content->childCount > 0;
             } break;
             // loop should just allow
             case LoopBackward: [[fallthrough]];
@@ -508,8 +508,9 @@ namespace Umbrella::UI {
     }
 
     void Carousel::set_ShowButtons(bool showButtons) {
-        _nextButton->gameObject->SetActive(showButtons);
-        _prevButton->gameObject->SetActive(showButtons);
+        _showButtons = showButtons;
+        _nextButton->gameObject->SetActive(_showButtons);
+        _prevButton->gameObject->SetActive(_showButtons);
     }
 
     void Carousel::set_InactiveAlpha(float inactiveAlpha) {
